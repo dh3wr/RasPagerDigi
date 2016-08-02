@@ -1,7 +1,7 @@
 CXX = g++
-CXXFLAGS = -c -Wall 
+CXXFLAGS = -c -Wall -std=c++11 -pthread
 LD = g++
-LDFLAGS = -lwiringPi
+LDFLAGS = -lwiringPi -pthread
 
 # Include local configuration to override defaults. Put all your changes
 # into this file. This avoids cluttering the repository with your local
@@ -21,7 +21,7 @@ vpath %.cpp $(SRC_DIR)
 
 define make-goal
 $1/%.o: %.cpp
-	$(CXX) $(INCLUDES) -c $$< -o $$@
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $$< -o $$@
 endef
 
 .PHONY: all checkdirs clean

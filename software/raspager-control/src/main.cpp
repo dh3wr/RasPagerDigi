@@ -32,8 +32,9 @@
 #include "tools/numberhandler.h"
 #include "tools/raspagerdigiextension.h"
 #include "tools/systemcontrol.h"
+#include "tools/serverprocess.h"
 
-#define PROG_VERSION	"0.0.1"
+#define PROG_VERSION	"0.0.3"
 #define COPYRIGHTZEILE1	"RasPagerDigi by DH3WR"
 #define COPYRIGHTZEILE2	"DF6EF, Delissen 0.0.1"
 
@@ -41,6 +42,9 @@
 
 bool skipDisplaySetup;
 string master, activeslots;
+static unique_ptr<ServerProcess> process;
+
+
 
 int main(int argc, char** argv) {
     skipDisplaySetup = false; // TRUE: Allows usage without Display attatched.
@@ -102,6 +106,11 @@ int main(int argc, char** argv) {
     myScreensaverMenu.addSubmenuItem(&myInfoNtp);
     myScreensaverMenu.addSubmenuItem(&myInfoHardware);
     cout << "Screensaver bereit!" << std::endl;
+	
+	process.reset(new ServerProcess(&myExtension));
+
+	process->run(12345);
+
 
     int count = 0;
     int count2 = 0;

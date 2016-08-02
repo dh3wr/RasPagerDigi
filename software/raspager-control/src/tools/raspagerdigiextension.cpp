@@ -153,7 +153,7 @@ double RaspagerDigiExtension::readRevPwr(){
 
 double RaspagerDigiExtension::readSWR(){
     double res;
-	
+	res = 0;
     return res;
 }
 
