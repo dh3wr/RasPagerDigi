@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <math.h>
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
 
@@ -60,23 +61,24 @@ private:
     void setLCDControlline ( int RS, int E );
     void setLCDDataLine ( int8_t data );
 	void writeDACValue(unsigned int uiRawDACvalue);
+	void writeDACVoltage(double dVoltage);
 	int readFwdPwrRaw();
 	int readRevPwrRaw();
 	int readCurrentRaw();
-    int readVoltageRaw();
+	int readVoltageRaw();
 	void setMeasurementMultiplexer(char channel, char enablePWRDetector);
 	
 public:
     RaspagerDigiExtension(bool skipSetup);
     double readVoltage();
-	double readCurrent();
-	double readFwdPwr();
-	double readRevPwr();
-	double readSWR();
+    double readCurrent();
+    double readFwdPwr();
+    double readRevPwr();
+    double readSWR();
 
     int readTemperatureRaw();
     double readTemperature();
-    void setOutputPower_Watt( double power_watt );
+    void setOutputPower_Watt( double dPower_Watt );
     int readButton();
     int readPortB();
     void testLCD();

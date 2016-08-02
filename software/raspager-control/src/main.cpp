@@ -108,7 +108,7 @@ int main(int argc, char** argv) {
 	myExtension.setOutputPower_Watt(4.7);
 
 	while (1) {
-		
+
 		// Read ADC Values
 		double fwdpwr = myExtension.readFwdPwr();
 		double revpwr = myExtension.readRevPwr();
@@ -119,10 +119,10 @@ int main(int argc, char** argv) {
 		<< ::std::setw( 12 ) << current << " A  "
 		<< ::std::setw( 12 ) << fwdpwr << " Fwd W  "
 		<< ::std::setw( 12 ) << revpwr << " Rev W  " << "\n";
-		
+
 		usleep(1000*200);
 	}
-	
+
     while (1) {
         // Tastererkennung
         if (!skipDisplaySetup && !myScreensaverMenu.isRunning()) {

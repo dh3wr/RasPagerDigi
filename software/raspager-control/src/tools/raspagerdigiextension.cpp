@@ -126,15 +126,29 @@ double RaspagerDigiExtension::readCurrent() {
 double RaspagerDigiExtension::readFwdPwr() {
     double res;
     res = ((double)readFwdPwrRaw() / 4096 * 5);
-    return res;
-	
+    if (res < 0.35) {
+	return 0;
+    } else if (res > 2.5) {
+	return 999;
+    } else {
+	double inputPwrMeter = 24.19354839 * (res - 0.5) + (-25);
+	double PwrFwr = pow(10, ((inputPwrMeter + 30) / 10)) / 1000;
+	return PwrFwr;
+    }
 }
 
 double RaspagerDigiExtension::readRevPwr(){
     double res;
     res = ((double)readRevPwrRaw() / 4096 * 5);
-    return res;
-	
+    if (res < 0.35) {
+	return 0;
+    } else if (res > 2.5) {
+	return 999;
+    } else {
+	double inputPwrMeter = 24.19354839 * (res - 0.5) + (-25);
+	double PwrRev = pow(10, ((inputPwrMeter + 30) / 10)) / 1000;
+	return PwrRev;
+    }
 }
 
 double RaspagerDigiExtension::readSWR(){
@@ -168,15 +182,19 @@ void RaspagerDigiExtension::writeDACValue(unsigned int uiRawDACvalue) {
 	unsigned char ucRawDACvalueLower = uiRawDACvalue & 0x00FF;
 	
 	// Schreiben, Upperbyte ist "Adresse", Lowerbyte ist Nutzdaten
-	cout << std::bitset<8>(ucRawDACvalueUpper) << " " << std::bitset<8>(ucRawDACvalueLower) << endl;
+//	cout << std::bitset<8>(ucRawDACvalueUpper) << " " << std::bitset<8>(ucRawDACvalueLower) << endl;
 		
 	wiringPiI2CWriteReg8(fddac, ucRawDACvalueUpper, ucRawDACvalueLower);
 }
 
-void RaspagerDigiExtension::setOutputPower_Watt(double power_watt) {
-	double dDACvalue =  (power_watt / 5.0) * 4095.0;
+void RaspagerDigiExtension::writeDACVoltage(double dVoltage) {
+	double dDACvalue =  (dVoltage / 5.0) * 4095.0;
         unsigned int uiDACvalue = (unsigned int)dDACvalue;
 	writeDACValue(uiDACvalue);
+}
+
+void RaspagerDigiExtension::setOutputPower_Watt(double dPower_Watt) {
+	writeDACVoltage(dPower_Watt);
 }
 
 int RaspagerDigiExtension::readButton() {
