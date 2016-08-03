@@ -1,0 +1,31 @@
+Anschlüsse, die an die Raspager-Platine direkt auf die Stiftleisten-Buchse gelötet werden müssen:
+
+1 3,3 V für One Wire
+2 5,0 V vom Spannungsregler
+6 GND vom Spannungsregler
+14 GND für One Wire
+16 GPIO23 als DQ für One Wire
+
+Widerstand 4,7 k von Pin 1 nach Pin 16 als Pull-Up für One Wire DQ Leitung
+
+Kabelbelegung One Wire
+weiß: 3,3 V
+gelb DQ
+braun GND
+
+Belegung 5 pol DIN Buchse für externe Sensoren:
+
+Blick von außen auf die Buchse
+
+     x
+ 
+1          5
+  2     4
+     3
+
+Zuordnung:
+3 VDD 3,3 V
+4 DQ
+5 GND
+
+

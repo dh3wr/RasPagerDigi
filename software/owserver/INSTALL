@@ -1,0 +1,21 @@
+Copy files to follwing destinations:
+
+owfs.conf -> /etc/
+*.service -> /lib/systemd/system
+*.socket -> /lib/systemd/system
+
+all other -> /etc/init.d/
+
+Add to /boot/config.txt
+dtoverlay=w1-gpio,gpiopin=23
+
+This means GPIO23 = Pin 16 on Header is used for One Wire Data Pin.
+
+Download new osfs-3.1
+
+wget http://downloads.sourceforge.net/project/owfs/owfs/3.1p1/owfs-3.1p1.tar.gz?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fowfs%2Ffiles%2Fowfs%2F3.1p1%2F&ts=1466675504&use_mirror=liquidtelecom
+mv owfs-3.1p1.tar.gz\?r\=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fowfs%2Ffiles%2Fowfs%2F3.1p1%2F owfs-3.1p1.tar.gz
+sudo apt-get install libfuse-dev swig
+./configure --enable-owfs --enable-w1  --enable-owperl --enable-swig --disable-parport --disable-usb  --prefix=/usr/local --enable-debian
+make
+sudo make install
