@@ -66,7 +66,7 @@ Wunsch
 			
 			Fwd Pwr mean  12,3 W		(RasPagerExtension readFwdPowerMean)
 			Ref Pwr mean  12,3 W		(RasPagerExtension readFwdPowerMean)
-			
+
 		Info Funkrufmaster
 //			12345678901234567890
 
@@ -75,18 +75,18 @@ Wunsch
 
 			Port Master					(Von Java-Programm über TCP Anfrage als String)
 			12345
-			
+
 			Status Verbindung			(Von Java-Programm über TCP Anfrage als Bool)
 			Verbunden/
 			Nicht verbunden
-			
+
 			Aktive Zeitschlitze			(Von Java-Programm über TCP Anfrage als String)
 			0123456789ABCDEF			(Der Zeitschlitz, der Momentan aktiv ist, soll
 										unterstrichen werden mit dem Cursor. Dazu ist ggf.
 										noch der Display-Treiber um diese Funktion zu
 										erweitern. Das Java-Programm meldet ebenfalls
 										über TCP den gerade aktiven Zeitschlitz.)
-										
+
 //	12345678901234567890
 	Einstell. Netzwerk
 	IP-Adresse
@@ -104,35 +104,38 @@ Wunsch
 		IP Master
 		123.123.123.123					(Wert soll stellenweise änderbar sein. Nach "OK"
 										per TCP an Java-Programm melden.
-										
+
 		Port Master
 		12345							(Wert soll stellenweise änderbar sein. Nach "OK"
 										per TCP an Java-Programm melden.
 
 	Installation/Test
-	
+
 		LED Test						(RasPagerExtension::setLED(alle an) noch zu schreiben)
 										Deaktivieren und zurück bei weiterem Tastendruck
-		
+
 		LCD Test						(RasPagerExtension::testLCD() noch zu schreiben
 										Deaktivieren und zurück bei weiterem Tastendruck
-		
+
 		I2C Bus Test					(RasPagerExtension::i2cBusTest() noch zu schreiben
 										Soll anzeigen, ob alle 4 I2C-Devices antworten
 //			12345678901234567890
 			0x12 FAIL  0x34  OK			(Zurück bei weiterem Tastendruck)
 			0x56  OK   0x78 FAIL		(Bespiel-Ausgabe für OK / Fail)
-			
+
 		Testaussendung
 										(Java-Programm stoppen,
-										raspagertest aufrufen, )
-			
 										
-	
-	
-		
-	
-										
+//			12345678901234567890
+			Testsendung aktiv			raspagertest aufrufen mit Kommandozeilenparameter,
+
+										Nach Rückkehr von raspagertest
+
+			Testsendung
+			             OK BACK
+										(Wenn Back: Java-Programm wieder starten,
+										 Wenn OK: raspagertest erneut ausführen)
+
 	System
 		Pakete aktualisieren
 		Linux aktualisieren
