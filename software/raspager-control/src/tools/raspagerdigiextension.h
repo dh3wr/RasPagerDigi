@@ -19,7 +19,7 @@
 #define I2CADDRESS_ADC		0x51
 #define I2CADDRESS_EXT4BIT	0x41
 #define I2CADDRESS_EXT16BIT	0x24
-#define I2CADDRESS_TMP		0x48
+//#define I2CADDRESS_TMP		0x48
 #define I2CADDRESS_DAC		0x60
 #define TASTERBITPATTERN	0b01111100
 #define TASTERUPPIN			(1<<2)
@@ -76,8 +76,8 @@ public:
     double readRevPwr();
     double readSWR();
 
-    int readTemperatureRaw();
-    double readTemperature();
+//    int readTemperatureRaw();
+//    double readTemperature();
     void setOutputPower_Watt( double dPower_Watt );
     int readButton();
     int readPortB();

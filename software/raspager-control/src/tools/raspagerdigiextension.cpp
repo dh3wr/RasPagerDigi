@@ -36,11 +36,11 @@ RaspagerDigiExtension::RaspagerDigiExtension(bool skipSetup) {
 //	wiringPiI2CWrite(fddac, 0b10000000);
 	wiringPiI2CWrite(fddac, ucDACConfigValue);
 
-    // Temp
+/*    // Temp
     fdtmp = wiringPiI2CSetup(I2CADDRESS_TMP);
     // Init Temp Sensor to 12 Bit resolution
     wiringPiI2CWriteReg16(fdtmp, 0x01, 0b01100000);
-
+*/
     // 4 Bit I2C Extension
     fdExt4bit = wiringPiI2CSetup(I2CADDRESS_EXT4BIT);
     // Init 4 Bit Mux: All Ports to Output Mode
@@ -157,7 +157,7 @@ double RaspagerDigiExtension::readSWR(){
     return res;
 }
 
-
+/*
 int RaspagerDigiExtension::readTemperatureRaw() {
     return (wiringPiI2CReadReg16(fdtmp, 0x00));
 }
@@ -173,6 +173,7 @@ double RaspagerDigiExtension::readTemperature() {
     double tmp = (double)res / 256;
     return tmp;
 }
+*/
 
 void RaspagerDigiExtension::writeDACValue(unsigned int uiRawDACvalue) {
 	// Übergabeparameter auf 12 Bit begrenzen
