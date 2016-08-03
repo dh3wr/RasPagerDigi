@@ -1,0 +1,144 @@
+Menü-Struktur
+
+Bestand 3.8.2016
+
+Hauptmenu
+	Infos und Statistiken
+		Info Network
+			Stage 0:	Current IP-Adresse
+						Current Gateway
+			Stage 1: 	Subnet mask
+						Subnet mask (CIDR)
+			Stage 2: 	DNS 1
+						DNS 2
+		Info NTP
+			NTP Server IP
+			Status Synchonisation
+			
+		Info Hardware
+			Temperatur
+			Spannung
+		
+	Einstellungen
+		IP-Adresse
+		Subnetz-Maske
+		Gateway
+		DNS-Server 1
+		DNS-Server 2
+	System
+		Pakete aktualisieren
+		Linux aktualisieren
+		Zeit setzen
+		Neustart
+		Herunterfahren
+
+Screensaver
+	(wie Infos und Statistiken)
+
+	
+Wunsch
+	Infos und Statistiken
+		Info Network
+			Stage 0:	Current IP-Adresse
+						Current Gateway
+			Stage 1: 	Subnet mask
+						Subnet mask (CIDR)
+			Stage 2: 	DNS 1
+						DNS 2
+		Info NTP
+			NTP Server IP
+			Status Synchonisation
+			
+		Info Hardware
+//			12345678901234567890
+			
+			Luft Einlass -12,3°C		(/run/owfs/.... Sensor ID xxxxxxxx)
+			Luft Auslass -12,3°C		(/run/owfs/.... Sensor ID xxxxxxxx)
+			
+			APRS Sender  -12,3°C		(/run/owfs/.... Sensor ID xxxxxxxx)
+			Funkruf PA   -12,3°C		(/run/owfs/.... Sensor ID xxxxxxxx)
+			
+			Spannung PA   12,3 V		(RasPagerExtension readVoltage)
+			Strom    PA	  12,3 A		(RasPagerExtension readCurrent)
+						
+			Fwd Pwr   now 12,3 W		(RasPagerExtension readFwdPower)
+			Ref Pwr   now 12,3 W		(RasPagerExtension readRevPower)
+			
+			Fwd Pwr mean  12,3 W		(RasPagerExtension readFwdPowerMean)
+			Ref Pwr mean  12,3 W		(RasPagerExtension readFwdPowerMean)
+			
+		Info Funkrufmaster
+//			12345678901234567890
+
+			IP Master					(Von Java-Programm über TCP Anfrage als String)
+			123.123.123.123
+
+			Port Master					(Von Java-Programm über TCP Anfrage als String)
+			12345
+			
+			Status Verbindung			(Von Java-Programm über TCP Anfrage als Bool)
+			Verbunden/
+			Nicht verbunden
+			
+			Aktive Zeitschlitze			(Von Java-Programm über TCP Anfrage als String)
+			0123456789ABCDEF			(Der Zeitschlitz, der Momentan aktiv ist, soll
+										unterstrichen werden mit dem Cursor. Dazu ist ggf.
+										noch der Display-Treiber um diese Funktion zu
+										erweitern. Das Java-Programm meldet ebenfalls
+										über TCP den gerade aktiven Zeitschlitz.)
+										
+//	12345678901234567890
+	Einstell. Netzwerk
+	IP-Adresse
+		Subnetz-Maske
+		Gateway
+		DNS-Server 1
+		DNS-Server 2
+
+//	12345678901234567890
+	Einstell. Funkruf
+		Sendeleistung
+		12,3 W							(Wert soll Stellenweise änderbar sein. Minimum
+										und Maximum sind noch zu definieren.)
+										Nach "OK" RasPagerExtension::setOutputPower_Watt())
+		IP Master
+		123.123.123.123					(Wert soll stellenweise änderbar sein. Nach "OK"
+										per TCP an Java-Programm melden.
+										
+		Port Master
+		12345							(Wert soll stellenweise änderbar sein. Nach "OK"
+										per TCP an Java-Programm melden.
+
+	Installation/Test
+	
+		LED Test						(RasPagerExtension::setLED(alle an) noch zu schreiben)
+										Deaktivieren und zurück bei weiterem Tastendruck
+		
+		LCD Test						(RasPagerExtension::testLCD() noch zu schreiben
+										Deaktivieren und zurück bei weiterem Tastendruck
+		
+		I2C Bus Test					(RasPagerExtension::i2cBusTest() noch zu schreiben
+										Soll anzeigen, ob alle 4 I2C-Devices antworten
+//			12345678901234567890
+			0x12 FAIL  0x34  OK			(Zurück bei weiterem Tastendruck)
+			0x56  OK   0x78 FAIL		(Bespiel-Ausgabe für OK / Fail)
+			
+		Testaussendung
+										(Java-Programm stoppen,
+										raspagertest aufrufen, )
+			
+										
+	
+	
+		
+	
+										
+	System
+		Pakete aktualisieren
+		Linux aktualisieren
+		Zeit setzen
+		Neustart
+		Herunterfahren
+
+Screensaver
+	(wie Infos und Statistiken)

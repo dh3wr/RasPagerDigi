@@ -1,0 +1,14 @@
+[Unit]
+Description=Backend server for 1-wire control
+Documentation=man:owserver(1)
+
+[Service]
+Type=notify
+ExecStart=/usr/local/bin/owserver --w1 -c /etc/owfs.conf
+Restart=on-failure
+#User=ow
+#Group=ow
+
+[Install]
+WantedBy=multi-user.target
+Also=owserver.socket
