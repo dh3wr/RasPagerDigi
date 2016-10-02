@@ -7,13 +7,15 @@ RaspagerDigiExtension::RaspagerDigiExtension(bool skipSetup) {
     }
 
     cout << "Setting up I2C Communication with extension boards..." << endl;
-    system("gpio load i2c");
+//    system("gpio load i2c");
     wiringPiSetup() ;
 
-	// Setup GPIO Pin 14 to High = 3.3 V to supply I2C Level shifter and isolator
-	
-	pinMode (14, OUTPUT);
-	digitalWrite (14, HIGH);
+	// Setup GPIO Pin 14 (in wiringPi No. 15 :-( ) to High = 3.3 V to supply I2C Level shifter and isolator
+	pinMode (15, OUTPUT);
+	digitalWrite (15, HIGH);
+
+	cout << "Waiting 500 ms to let the I2C Level shifter get stable V_Supply..." << endl;
+
 	// Some time to let the supply voltage be stabilized
 	delay(500);
 	
@@ -118,9 +120,17 @@ double RaspagerDigiExtension::readVoltage() {
 }
 
 double RaspagerDigiExtension::readCurrent() {
+    double voltage;
     double res;
-    res = ((double)readCurrentRaw() / 4096 * 5);
-    return res;
+    voltage = ((double)readCurrentRaw() / 4096 * 5);
+
+    // ACS723-LLCTR-20AU  200 mV/A
+    res = (voltage - 0.5) / 0.2;
+    if (res < 0.0) {
+	return 0;
+    } else {
+	return res;
+    }
 }
 
 double RaspagerDigiExtension::readFwdPwr() {

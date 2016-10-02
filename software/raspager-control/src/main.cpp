@@ -42,7 +42,7 @@
 
 bool skipDisplaySetup;
 string master, activeslots;
-static unique_ptr<ServerProcess> process;
+//static unique_ptr<ServerProcess> process;
 
 
 
@@ -76,13 +76,14 @@ int main(int argc, char** argv) {
     myMenuStats.addSubmenuItem(new MenuItemInfo(COPYRIGHTZEILE1, COPYRIGHTZEILE2, &myExtension));
     myMenuStats.addSubmenuItem(new MenuItemInfo("RasPagerControl-Version", PROG_VERSION, &myExtension));
 
+
     // Einstellungen
     MenuItemOkBack myMenuEinstellungen("Einstellungen", &myExtension);
     myMenuEinstellungen.addSubmenuItem(new MenuIpAdresseEingabe("IP-Adresse", &myNetworkControl, &myExtension));
     myMenuEinstellungen.addSubmenuItem(new MenuSubnetEingabe("Subnetz-Maske", &myNetworkControl, &myExtension));
     myMenuEinstellungen.addSubmenuItem(new MenuGatewayEingabe("Gateway", &myNetworkControl, &myExtension));
     myMenuEinstellungen.addSubmenuItem(new MenuDnsEingabe("DNS-Server 1", &myNetworkControl, 1, &myExtension));
-    myMenuEinstellungen.addSubmenuItem(new MenuDnsEingabe("DNS-Server 2", &myNetworkControl, 2, &myExtension));
+//    myMenuEinstellungen.addSubmenuItem(new MenuDnsEingabe("DNS-Server 2", &myNetworkControl, 2, &myExtension));
 
     // System
     MenuItemOkBack myMenuSystem("System", &myExtension);
@@ -107,14 +108,14 @@ int main(int argc, char** argv) {
     myScreensaverMenu.addSubmenuItem(&myInfoHardware);
     cout << "Screensaver bereit!" << std::endl;
 	
-	process.reset(new ServerProcess(&myExtension));
+//	process.reset(new ServerProcess(&myExtension));
 
-	process->run(12345);
+//	process->run(12345);
 
 
     int count = 0;
     int count2 = 0;
-	myExtension.setOutputPower_Watt(4.7);
+	myExtension.setOutputPower_Watt(4.8);
 
 	while (1) {
 
