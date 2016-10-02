@@ -338,7 +338,7 @@ void RaspagerDigiExtension::lcdWriteString(string myString, int zeile, int spalt
 
 string RaspagerDigiExtension::doubleValueToString(double val) {
     std::ostringstream ss;
-    ss << val;
+    ss << fixed << setprecision(2) << val;
     return ss.str();
 }
 

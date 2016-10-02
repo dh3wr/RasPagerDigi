@@ -34,9 +34,9 @@
 #include "tools/systemcontrol.h"
 #include "tools/serverprocess.h"
 
-#define PROG_VERSION	"0.0.3"
+#define PROG_VERSION	"0.0.8"
 #define COPYRIGHTZEILE1	"RasPagerDigi by DH3WR"
-#define COPYRIGHTZEILE2	"DF6EF, Delissen 0.0.1"
+#define COPYRIGHTZEILE2	"DF6EF, Delissen 0.0.8"
 
 #define TASTERDELAY_MS	50
 
@@ -115,9 +115,9 @@ int main(int argc, char** argv) {
 
     int count = 0;
     int count2 = 0;
-	myExtension.setOutputPower_Watt(4.8);
+	myExtension.setOutputPower_Watt(4.7);
 
-	while (1) {
+/*	while (1) {
 
 		// Read ADC Values
 		double fwdpwr = myExtension.readFwdPwr();
@@ -132,7 +132,7 @@ int main(int argc, char** argv) {
 
 		usleep(1000*200);
 	}
-
+*/
     while (1) {
         // Tastererkennung
         if (!skipDisplaySetup && !myScreensaverMenu.isRunning()) {

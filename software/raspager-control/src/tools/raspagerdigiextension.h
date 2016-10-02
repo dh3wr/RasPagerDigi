@@ -10,6 +10,11 @@
 #include <cstring>
 #include <iostream>
 #include <sstream>
+#include <string>
+#include <iomanip>  // ::std::setw 
+#include <ios>      // ::std::fixed
+
+
 #include <bitset>
 
 
