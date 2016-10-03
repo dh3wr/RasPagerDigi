@@ -34,9 +34,9 @@
 #include "tools/systemcontrol.h"
 #include "tools/serverprocess.h"
 
-#define PROG_VERSION	"0.0.8"
+#define PROG_VERSION	"0.0.10"
 #define COPYRIGHTZEILE1	"RasPagerDigi by DH3WR"
-#define COPYRIGHTZEILE2	"DF6EF, Delissen 0.0.8"
+#define COPYRIGHTZEILE2	"DF6EF, Delissen 0.0.10"
 
 #define TASTERDELAY_MS	50
 

@@ -137,7 +137,7 @@ double RaspagerDigiExtension::readFwdPwr() {
     double res;
     res = ((double)readFwdPwrRaw() / 4096 * 5);
     if (res < 0.35) {
-	return 0;
+	return 0.0;
     } else if (res > 2.5) {
 	return 999;
     } else {
@@ -151,7 +151,7 @@ double RaspagerDigiExtension::readRevPwr(){
     double res;
     res = ((double)readRevPwrRaw() / 4096 * 5);
     if (res < 0.35) {
-	return 0;
+	return 0.0;
     } else if (res > 2.5) {
 	return 999;
     } else {
@@ -163,8 +163,16 @@ double RaspagerDigiExtension::readRevPwr(){
 
 double RaspagerDigiExtension::readSWR(){
     double res;
-	res = 0;
-    return res;
+    double r;
+    double FwdPwr = readFwdPwr();
+    double RevPwr = readRevPwr();
+    if (FwdPwr == 0.0) {
+	return -1;
+    } else {
+	r = sqrt(RevPwr/FwdPwr);
+	res = (1+r)/(1-r);
+	return res;
+    }
 }
 
 /*
@@ -336,9 +344,9 @@ void RaspagerDigiExtension::lcdWriteString(string myString, int zeile, int spalt
     }
 }
 
-string RaspagerDigiExtension::doubleValueToString(double val) {
+string RaspagerDigiExtension::doubleValueToString(double val, int prec) {
     std::ostringstream ss;
-    ss << fixed << setprecision(2) << val;
+    ss << fixed << setprecision(prec) << val;
     return ss.str();
 }
 

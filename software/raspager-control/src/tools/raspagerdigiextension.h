@@ -93,7 +93,7 @@ public:
     void lcdWriteString( string mystring, int zeile = -1, int spalte = -1 );
     void lcdExecuteNormalCommand ( int8_t command );
     void lcdSetCursor( int zeile, int spalte );
-    static string doubleValueToString(double val);
+    static string doubleValueToString(double val, int prec = 2);
     static string shortUnsignedIntToString(short unsigned int val);
     static string boolToString(bool val);
 };
