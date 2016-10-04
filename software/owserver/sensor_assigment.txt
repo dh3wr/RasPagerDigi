@@ -1,0 +1,5 @@
+10-000800c35598 Luftauslass
+10-000802896c24 Lufteinlass
+10-000802b54503 PA Kühlkörper
+10-000802b59e11 Baofeng
+
