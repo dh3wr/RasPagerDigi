@@ -14,6 +14,7 @@
 #include <ios>      // ::std::fixed
 
 #include "menus/info/hardware.h"
+#include "menus/info/temperature.h"
 #include "menus/info/network.h"
 #include "menus/info/ntp.h"
 #include "menus/menuiteminfo.h"
@@ -33,6 +34,9 @@
 #include "tools/raspagerdigiextension.h"
 #include "tools/systemcontrol.h"
 #include "tools/serverprocess.h"
+
+
+
 
 #define PROG_VERSION	"0.0.10"
 #define COPYRIGHTZEILE1	"RasPagerDigi by DH3WR"
@@ -55,7 +59,7 @@ int main(int argc, char** argv) {
     activeslots = "0123456789ABCDEF";
     master = "DB0ABC";
     RaspagerDigiExtension myExtension(skipDisplaySetup);
-
+    OneWire myOneWire;
 	
 	
     // Hauptmenü
@@ -66,12 +70,14 @@ int main(int argc, char** argv) {
     InfoNetwork myInfoNetwork(&myNetworkControl, &myExtension);
     InfoNtp myInfoNtp(&myNetworkControl, &myExtension);
     InfoHardware myInfoHardware(&myExtension);
+    InfoTemperature myInfoTemperature(&myExtension, &myOneWire);
 
     // Infos
     MenuItemOkBack myMenuStats("Infos und Statistiken", &myExtension);
     myMenuStats.addSubmenuItem(&myInfoNetwork);
     myMenuStats.addSubmenuItem(&myInfoNtp);
     myMenuStats.addSubmenuItem(&myInfoHardware);
+    myMenuStats.addSubmenuItem(&myInfoTemperature);
     myMenuStats.addSubmenuItem(new MenuItemInfo("Kernel-Version", mySystemControl.readKernelVersion(), &myExtension));
     myMenuStats.addSubmenuItem(new MenuItemInfo(COPYRIGHTZEILE1, COPYRIGHTZEILE2, &myExtension));
     myMenuStats.addSubmenuItem(new MenuItemInfo("RasPagerControl-Version", PROG_VERSION, &myExtension));
@@ -116,6 +122,8 @@ int main(int argc, char** argv) {
     int count = 0;
     int count2 = 0;
 	myExtension.setOutputPower_Watt(4.7);
+    
+    
 
 /*	while (1) {
 

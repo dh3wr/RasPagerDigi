@@ -125,7 +125,7 @@ double RaspagerDigiExtension::readCurrent() {
     voltage = ((double)readCurrentRaw() / 4096 * 5);
 
     // ACS723-LLCTR-20AU  200 mV/A
-    res = (voltage - 0.5) / 0.2;
+    res = (voltage - 0.52) / 0.2;
     if (res < 0.0) {
 	return 0;
     } else {

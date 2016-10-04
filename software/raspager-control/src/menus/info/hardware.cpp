@@ -25,7 +25,7 @@ void InfoHardware::printMenu(bool resetCursor) {
         this->myRaspagerDigiExtension->lcdClear();
 
         this->myRaspagerDigiExtension->lcdWriteString("U PA: " + this->myRaspagerDigiExtension->doubleValueToString(U_PA,1), 1, 1);
-        this->myRaspagerDigiExtension->lcdWriteString("V", 1, 10);
+        this->myRaspagerDigiExtension->lcdWriteString("V", 1, 11);
 
         this->myRaspagerDigiExtension->lcdWriteString("I PA: " + this->myRaspagerDigiExtension->doubleValueToString(I_PA,1), 1, 14);
         this->myRaspagerDigiExtension->lcdWriteString("A", 1, 24);
