@@ -20,8 +20,21 @@ void InfoTemperature::printMenu(bool resetCursor) {
 
         this->myRaspagerDigiExtension->lcdClear();
 
-        this->myRaspagerDigiExtension->lcdWriteString("Einlass: " + this->OneWirePtr->readTemp(IN), 1, 1);
-        this->myRaspagerDigiExtension->lcdWriteString("C", 1, 16);
+        this->myRaspagerDigiExtension->lcdWriteString("Einlass " + this->myRaspagerDigiExtension->doubleValueToString(this->OneWirePtr->readTemp(IN),1), 1, 1);
+        this->myRaspagerDigiExtension->lcdWriteString("C", 1, 13);
+
+        this->myRaspagerDigiExtension->lcdWriteString("PA " + this->myRaspagerDigiExtension->doubleValueToString(this->OneWirePtr->readTemp(PA),1), 1, 15);
+        this->myRaspagerDigiExtension->lcdWriteString("C", 1, 24);
+
+        this->myRaspagerDigiExtension->lcdWriteString("Auslass " + this->myRaspagerDigiExtension->doubleValueToString(this->OneWirePtr->readTemp(OUT),1), 2, 1);
+        this->myRaspagerDigiExtension->lcdWriteString("C", 2, 13);
+
+        this->myRaspagerDigiExtension->lcdWriteString("2m " + this->myRaspagerDigiExtension->doubleValueToString(this->OneWirePtr->readTemp(PA),1), 2, 15);
+        this->myRaspagerDigiExtension->lcdWriteString("C", 2, 24);
+
+
+
+
 
     }
 }

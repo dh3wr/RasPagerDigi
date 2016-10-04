@@ -3,9 +3,9 @@
 OneWire::OneWire() {
 }
 
-string OneWire::readTemp(string sSensor) {
+double OneWire::readTemp(string sSensor) {
     FILE *fp;
-    string out;
+    string sOut;
     char var[40];
     string sCommand;
 
@@ -17,7 +17,7 @@ string OneWire::readTemp(string sSensor) {
     fp = popen(cstrCommand, "r");
 
     while (fgets(var, sizeof(var), fp) != NULL) {
-        out = out + var;
+        sOut = sOut + var;
     }
     pclose(fp);
 
@@ -27,6 +27,7 @@ string OneWire::readTemp(string sSensor) {
     // 123456789ABC
     //      24.5625
 
-    out = out.substr(5, out.length() - 1);
-    return out;
+    sOut = sOut.substr(5, sOut.length() - 1);
+    double dOut = std::stod (sOut);
+    return dOut;
 }

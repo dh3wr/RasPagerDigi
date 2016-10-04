@@ -23,6 +23,6 @@ class OneWire {
 
 public:
     OneWire();
-    string readTemp(string sSensor);
+    double readTemp(string sSensor);
 };
 
