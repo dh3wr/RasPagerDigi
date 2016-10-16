@@ -71,7 +71,32 @@ RaspagerDigiExtension::RaspagerDigiExtension(bool skipSetup) {
     wiringPiI2CReadReg8(fdExt16bit, 0x11);
     lcdInit();
 
+    // Setup LED GPIO
+    // GPIO Pin 18 is in Wiring Pi Pin 1
+    // GPIO Pin 15 is in Wiring Pi Pin 16
+    pinMode (1, OUTPUT);
+    pinMode (16, OUTPUT);
+
     keypressed = 0;
+}
+
+
+void RaspagerDigiExtension::setPTTLED(bool bPTTLED) {
+// GPIO Pin 18 is in Wiring Pi Pin 1
+    if (bPTTLED == true) {
+	digitalWrite (1, HIGH);
+    } else {
+	digitalWrite (1, LOW);
+    }
+}
+
+void RaspagerDigiExtension::setMasterConnectedLED(bool bMasterConnectedLED) {
+// GPIO Pin 15 is in Wiring Pi Pin 16
+    if (bMasterConnectedLED == true) {
+    	digitalWrite (16, HIGH);
+    } else {
+	digitalWrite (16, LOW);
+    }
 }
 
 

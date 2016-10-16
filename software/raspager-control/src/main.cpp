@@ -112,8 +112,13 @@ int main(int argc, char** argv) {
     myScreensaverMenu.addSubmenuItem(&myInfoNetwork);
     myScreensaverMenu.addSubmenuItem(&myInfoNtp);
     myScreensaverMenu.addSubmenuItem(&myInfoHardware);
+    myExtension.setPTTLED(true);
+    myExtension.setMasterConnectedLED(true);
     cout << "Screensaver bereit!" << std::endl;
-	
+
+
+
+
 //	process.reset(new ServerProcess(&myExtension));
 
 //	process->run(12345);
