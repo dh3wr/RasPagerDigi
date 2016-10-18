@@ -1,6 +1,17 @@
 #include "raspagerdigiextension.h"
 
 RaspagerDigiExtension::RaspagerDigiExtension(bool skipSetup) {
+
+	// Initialize Array for Mean Value Calculations of Pwr and SWRMeasurements
+	
+	for (int i = 0; i < MeanValuesNumber; i++) {
+	FwdPwrMeasurements[i] = 0.0;
+	RevPwrMeasurements[i] = 0.0;
+	SWRMeasurements[i] = 0.0;
+	}
+	// Initialize Pointer
+	MeanValuePointer = 0;		
+	
     if (skipSetup) {
         cout << "WARNING: Skipping I2C Communication Setup!" << endl;
         return;
@@ -367,6 +378,58 @@ void RaspagerDigiExtension::lcdWriteString(string myString, int zeile, int spalt
         lcdWriteChar(myString[i]);
         i++;
     }
+}
+
+double RaspagerDigiExtension::readMeanFwdPwr() {
+	double result = 0.0;
+	// Build mean value by summing up and dividing
+	for (int i = 0; i < MeanValuesNumber; i++) {
+		result += FwdPwrMeasurements[i];
+	}
+	result /= MeanValuesNumber;
+	return result;
+}
+
+double RaspagerDigiExtension::readMeanRevPwr() {
+	double result = 0.0;
+	// Build mean value by summing up and dividing
+	for (int i = 0; i < MeanValuesNumber; i++) {
+		result += RevPwrMeasurements[i];
+	}
+	result /= MeanValuesNumber;
+	return result;
+}
+
+double RaspagerDigiExtension::readMeanSWR() {
+	double result = 0.0;
+	// Build mean value by summing up and dividing
+	for (int i = 0; i < MeanValuesNumber; i++) {
+		result += SWRMeasurements[i];
+	}
+	result /= MeanValuesNumber;
+	return result;
+}
+
+void RaspagerDigiExtension::MakeMeasurementCyclic() {
+	double result = this->readSWR();
+	
+	// If there is no transmitting now, just return
+	if (result == -1.0) { return; }
+	SWRMeasurements[MeanValuePointer] = result;
+	
+	result = readFwdPwr();
+	FwdPwrMeasurements[MeanValuePointer] = result;
+	
+	result = readRevPwr();
+	RevPwrMeasurements[MeanValuePointer] = result;
+
+	// Check if last position in array is reached
+	if ((MeanValuePointer+1) >=  MeanValuesNumber) {
+		// Reset Pointer to start
+		MeanValuePointer = 0;
+	} else {
+		MeanValuePointer++;
+	}
 }
 
 string RaspagerDigiExtension::doubleValueToString(double val, int prec) {

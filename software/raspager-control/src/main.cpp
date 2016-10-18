@@ -38,9 +38,9 @@
 
 
 
-#define PROG_VERSION	"0.0.10"
+#define PROG_VERSION	"0.0.11"
 #define COPYRIGHTZEILE1	"RasPagerDigi by DH3WR"
-#define COPYRIGHTZEILE2	"DF6EF, Delissen 0.0.10"
+#define COPYRIGHTZEILE2	"DF6EF, Delissen 0.0.11"
 
 #define TASTERDELAY_MS	50
 
@@ -126,7 +126,8 @@ int main(int argc, char** argv) {
 
     int count = 0;
     int count2 = 0;
-	myExtension.setOutputPower_Watt(4.7);
+	int countMeasurementsCyclic = 0;
+	myExtension.setOutputPower_Watt(2.7);
     
     
 
@@ -157,11 +158,47 @@ int main(int argc, char** argv) {
         }
 
         // Spannung und Temperatur aktuell halten
-        if (count2 == 50) {
+        if (count2 >= 50) {
             myInfoHardware.printMenu();
             count2 = 0;
         }
         count2++;
+
+		myExtension.MakeMeasurementCyclic();
+
+			
+		// Keep Measurements for Fwd und Rev Power as well as SWR up-to-date_order
+		if (countMeasurementsCyclic >= 20)
+		{
+			countMeasurementsCyclic = 0;
+			
+		// Read ADC Values
+		double fwdpwr = myExtension.readFwdPwr();
+		double revpwr = myExtension.readRevPwr();
+		double swr = myExtension.readSWR();
+		double voltage = myExtension.readVoltage();
+		double current = myExtension.readCurrent();
+		
+		::std::cout << ::std::fixed 
+		<< "actual: "
+		<< ::std::setw( 12 ) << voltage << " V  "
+		<< ::std::setw( 12 ) << current << " A  "
+		<< ::std::setw( 12 ) << fwdpwr << " Fwd W  "
+		<< ::std::setw( 12 ) << revpwr << " Rev W  "
+		<< ::std::setw( 12 ) << swr << " SWR" << endl;
+
+		double fwdpwrmean = myExtension.readMeanFwdPwr();
+		double revpwrmean = myExtension.readMeanRevPwr();
+		double swrmean = myExtension.readMeanSWR();
+		
+		::std::cout << ::std::fixed 
+		<< "Mean:                                   "
+		<< ::std::setw( 12 ) << fwdpwrmean << " Fwd W  "
+		<< ::std::setw( 12 ) << revpwrmean << " Rev W  "
+		<< ::std::setw( 12 ) << swrmean << " SWR" << endl << endl;
+				
+		}
+		countMeasurementsCyclic++;
 
         // Hauptmenü nach Screensaver-Durchlauf anzeigen
         if (!myScreensaverMenu.isRunning() && myMainMenu.active && count == 0) {

@@ -17,10 +17,6 @@
 
 #include <bitset>
 
-
-
-
-
 #define I2CADDRESS_ADC		0x51
 #define I2CADDRESS_EXT4BIT	0x41
 #define I2CADDRESS_EXT16BIT	0x24
@@ -47,7 +43,7 @@
 #define PCA9536FWDPWR		0x02
 #define PCA9536REVPWR		0x00
 #define PCA9535ENABLEPWR	0x01
-
+#define MeanValuesNumber	20
 
 
 using namespace std;
@@ -73,6 +69,11 @@ private:
 	int readVoltageRaw();
 	void setMeasurementMultiplexer(char channel, char enablePWRDetector);
 	
+	double FwdPwrMeasurements[MeanValuesNumber];
+	double RevPwrMeasurements[MeanValuesNumber];
+	double SWRMeasurements[MeanValuesNumber];
+	int MeanValuePointer;
+	
 public:
     RaspagerDigiExtension(bool skipSetup);
     void setPTTLED(bool bPTTLED);
@@ -82,7 +83,12 @@ public:
     double readFwdPwr();
     double readRevPwr();
     double readSWR();
+    double readMeanFwdPwr();
+    double readMeanRevPwr();
+    double readMeanSWR();
+	void MakeMeasurementCyclic();
 
+	
 //    int readTemperatureRaw();
 //    double readTemperature();
     void setOutputPower_Watt( double dPower_Watt );
