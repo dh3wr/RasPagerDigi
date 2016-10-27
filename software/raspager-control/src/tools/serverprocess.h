@@ -1,15 +1,16 @@
 #pragma once
 
+#include "IProcess.h"
+#include "raspagerdigiextension.h"
 #include <atomic>
 #include <memory>
 #include <string>
-#include "../tools/raspagerdigiextension.h"
 
 
-class ServerProcess
+class ServerProcess : public IProcess
 {
 public:
-	ServerProcess(RaspagerDigiExtension* myExtension);
+	ServerProcess(RaspagerDigiExtension& extension, int port);
 
 	ServerProcess(const ServerProcess& o) = delete;
 
@@ -17,11 +18,9 @@ public:
 
 	ServerProcess& operator=(const ServerProcess& o) = delete;
 
-	void run(int port);
+	virtual void run() noexcept override;
 
-	void stop();
-	
-	RaspagerDigiExtension* myRaspagerDigiExtension;
+	virtual void terminate() noexcept override;
 
 private:
 	std::string getTextData();
@@ -30,4 +29,6 @@ private:
 private:
 	std::atomic_bool mKill;
 	int mSD;
+	int mPort;
+	RaspagerDigiExtension* mExtension;
 };

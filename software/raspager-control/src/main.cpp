@@ -34,11 +34,11 @@
 #include "tools/raspagerdigiextension.h"
 #include "tools/systemcontrol.h"
 #include "tools/serverprocess.h"
+#include "tools/ProcessManager.h"
 
+using namespace std;
 
-
-
-#define PROG_VERSION	"0.0.11"
+#define PROG_VERSION	"0.0.12"
 #define COPYRIGHTZEILE1	"RasPagerDigi by DH3WR"
 #define COPYRIGHTZEILE2	"DF6EF, Delissen 0.0.11"
 
@@ -46,9 +46,7 @@
 
 bool skipDisplaySetup;
 string master, activeslots;
-//static unique_ptr<ServerProcess> process;
-
-
+static ProcessManager g_pm;
 
 int main(int argc, char** argv) {
     skipDisplaySetup = false; // TRUE: Allows usage without Display attatched.
@@ -117,19 +115,13 @@ int main(int argc, char** argv) {
     cout << "Screensaver bereit!" << std::endl;
 
 
-
-
-//	process.reset(new ServerProcess(&myExtension));
-
-//	process->run(12345);
-
+	auto p = unique_ptr<IProcess>(new ServerProcess(myExtension, 12345));
+	g_pm.add(move(p));
 
     int count = 0;
     int count2 = 0;
 	int countMeasurementsCyclic = 0;
-	myExtension.setOutputPower_Watt(2.7);
-    
-    
+	myExtension.setOutputPower_Watt(2.7);    
 
 /*	while (1) {
 
@@ -217,6 +209,9 @@ int main(int argc, char** argv) {
             count = 0;
         }
     }
+
+	g_pm.shutdown();
+	g_pm.wait();
 
     return 0;
 }

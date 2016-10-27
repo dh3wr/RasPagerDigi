@@ -19,7 +19,7 @@ public:
     bool active;
     void setActive ( bool myState );
 
-    virtual int button ( int myTaster ) {};
+    virtual int button ( int myTaster ) { return -1; };
     virtual void printMenu ( bool reset = false ) {};
     virtual void processOK ( void ) {};
 };

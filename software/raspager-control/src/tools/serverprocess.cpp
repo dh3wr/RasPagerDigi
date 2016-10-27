@@ -10,27 +10,28 @@
 
 using namespace std;
 
-ServerProcess::ServerProcess(RaspagerDigiExtension* myExtension) :
+ServerProcess::ServerProcess(RaspagerDigiExtension& extension, int port) :
 	mKill(false),
-	mSD(-1)
+	mSD(-1),
+	mPort(port),
+	mExtension(&extension)
 {
-	this->myRaspagerDigiExtension = myExtension;
 }
 
 
 ServerProcess::~ServerProcess()
 {
-	if (mSD > 0)
+	if (mSD != -1)
 	{
 		close(mSD);
 	}
 }
 
-void ServerProcess::run(int port)
+void ServerProcess::run() noexcept
 {
 	if (mSD != -1)
 	{
-		cout << "Server already running.\n";
+		cerr << "Server already running." << endl;
 		return;
 	}
 
@@ -44,28 +45,30 @@ void ServerProcess::run(int port)
 	mSD = socket(AF_INET, SOCK_STREAM, 0);
 	if (mSD == -1)
 	{
-		throw runtime_error("Failed to create server socket.");
+		//throw runtime_error("Failed to create server socket.");
+		cerr << "Failed to create server socket: " << strerror(errno) << endl;
 	}
 
 	const int yes = 1;
 	setsockopt(mSD, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
 
-	sockaddr_in addr;
-	memset(&addr, 0, sizeof(addr));
+	sockaddr_in addr{};
 	addr.sin_family = AF_INET;
 	addr.sin_addr.s_addr = INADDR_ANY;
-	addr.sin_port = htons(port);
+	addr.sin_port = htons(mPort);
 
 	if (bind(mSD, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) == -1)
 	{
+		cerr << "Failed to bind server socket: " << strerror(errno) << endl;
 		close(mSD);
-		throw runtime_error("Failed to bind server socket.");
+		//throw runtime_error("Failed to bind server socket.");
 	}
 
 	if (listen(mSD, 10) == -1)
 	{
+		cerr << "Failed to listen on server socket: " << strerror(errno) << endl;
 		close(mSD);
-		throw runtime_error("Failed to listen on server socket.");
+		//throw runtime_error("Failed to listen on server socket.");
 	}
 
 	cout << "Server started.\n";
@@ -78,7 +81,7 @@ void ServerProcess::run(int port)
 	cout << "Server stopped.\n";
 }
 
-void ServerProcess::stop()
+void ServerProcess::terminate() noexcept
 {
 	mKill = true;
 }
@@ -93,7 +96,7 @@ string ServerProcess::getTextData()
 		";" << data.IBat << ";" << data.UPsu << ";" << data.IPsu;
 */
 	ostringstream text;
-	double dVoltage = this->myRaspagerDigiExtension->readVoltage();
+	double dVoltage = this->mExtension->readVoltage();
 	text << "Voltage" << dVoltage << "\n";
 	return text.str();
 }
@@ -108,13 +111,13 @@ void ServerProcess::acceptClient()
 	{
 		if (errno != EINTR)
 		{
-			cout << "Failed to accept connection.";
+			cerr << "Failed to accept connection: " << strerror(errno) << endl;
 		}
 
 		return;
 	}
 
-	cout << "Client connected.\n";
+	cout << "Client connected." << endl;
 
 	try
 	{
@@ -122,15 +125,16 @@ void ServerProcess::acceptClient()
 		const auto len = write(fd, txt.c_str(), txt.size());
 		if (len == -1)
 		{
-			cout << "Failed to write data.";
+			cerr << "Failed to write data: " << strerror(errno) << endl;
 		}
 	}
 	catch (const exception& ex)
 	{
-//		mLogger->log(LogLevel::ERROR, ex.what());
+		cerr << "AcceptClient: " << ex.what() << endl;
+		// mLogger->log(LogLevel::ERROR, ex.what());
 	}
 
 	close(fd);
 
-	cout << "Client connection closed.\n";
+	cout << "Client connection closed." << endl;
 }
