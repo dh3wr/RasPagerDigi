@@ -63,15 +63,29 @@ private:
     void setLCDDataLine ( int8_t data );
 	void writeDACValue(unsigned int uiRawDACvalue);
 	void writeDACVoltage(double dVoltage);
+	void setMeasurementMultiplexer(char channel, char enablePWRDetector);
+
 	int readFwdPwrRaw();
 	int readRevPwrRaw();
 	int readCurrentRaw();
 	int readVoltageRaw();
-	void setMeasurementMultiplexer(char channel, char enablePWRDetector);
+
+    double readInternalVoltage();
+    double readInternalCurrent();
+    double readInternalFwdPwr();
+    double readInternalRevPwr();
+    double readInternalSWR();
 	
 	double FwdPwrMeasurements[MeanValuesNumber];
 	double RevPwrMeasurements[MeanValuesNumber];
 	double SWRMeasurements[MeanValuesNumber];
+	
+	double VoltageMeasurement = 0.0;
+	double CurrentMeasurement = 0.0;
+	double FwdPwrMeasurement = 0.0;
+	double RevPwrMeasurement = 0.0;
+	double SWRMeasurement = -1.0;
+
 	int MeanValuePointer;
 	
 public:
@@ -83,10 +97,12 @@ public:
     double readFwdPwr();
     double readRevPwr();
     double readSWR();
+
     double readMeanFwdPwr();
     double readMeanRevPwr();
     double readMeanSWR();
 	void MakeMeasurementCyclic();
+	
 
 	
 //    int readTemperatureRaw();

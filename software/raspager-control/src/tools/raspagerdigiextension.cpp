@@ -89,6 +89,7 @@ RaspagerDigiExtension::RaspagerDigiExtension(bool skipSetup) {
     pinMode (16, OUTPUT);
 
     keypressed = 0;
+	this->MakeMeasurementCyclic();
 }
 
 
@@ -149,13 +150,13 @@ int RaspagerDigiExtension::readCurrentRaw() {
 }
 
 
-double RaspagerDigiExtension::readVoltage() {
+double RaspagerDigiExtension::readInternalVoltage() {
     double res;
     res = ((double)readVoltageRaw() / 4096 * 5) / 10000 * (10000 + 33000);
     return res;
 }
 
-double RaspagerDigiExtension::readCurrent() {
+double RaspagerDigiExtension::readInternalCurrent() {
     double voltage;
     double res;
     voltage = ((double)readCurrentRaw() / 4096 * 5);
@@ -169,7 +170,7 @@ double RaspagerDigiExtension::readCurrent() {
     }
 }
 
-double RaspagerDigiExtension::readFwdPwr() {
+double RaspagerDigiExtension::readInternalFwdPwr() {
     double res;
     res = ((double)readFwdPwrRaw() / 4096 * 5);
     if (res < 0.35) {
@@ -183,7 +184,7 @@ double RaspagerDigiExtension::readFwdPwr() {
     }
 }
 
-double RaspagerDigiExtension::readRevPwr(){
+double RaspagerDigiExtension::readInternalRevPwr(){
     double res;
     res = ((double)readRevPwrRaw() / 4096 * 5);
     if (res < 0.35) {
@@ -197,7 +198,7 @@ double RaspagerDigiExtension::readRevPwr(){
     }
 }
 
-double RaspagerDigiExtension::readSWR(){
+double RaspagerDigiExtension::readInternalSWR(){
     double res;
     double r;
     double FwdPwr = readFwdPwr();
@@ -410,18 +411,39 @@ double RaspagerDigiExtension::readMeanSWR() {
 	return result;
 }
 
+double RaspagerDigiExtension::readVoltage() {
+	return VoltageMeasurement;
+}
+
+double RaspagerDigiExtension::readCurrent() {
+	return CurrentMeasurement;
+}
+double RaspagerDigiExtension::readFwdPwr() {
+	return FwdPwrMeasurement;
+}
+double RaspagerDigiExtension::readRevPwr() {
+	return RevPwrMeasurement;
+}
+
+double RaspagerDigiExtension::readSWR() {
+	return SWRMeasurement;
+}
+	
 void RaspagerDigiExtension::MakeMeasurementCyclic() {
-	double result = this->readSWR();
+	VoltageMeasurement = this->readInternalVoltage();
+	CurrentMeasurement = this->readInternalCurrent();
+		
+	SWRMeasurement = this->readInternalSWR();
 	
 	// If there is no transmitting now, just return
-	if (result == -1.0) { return; }
-	SWRMeasurements[MeanValuePointer] = result;
+	if (SWRMeasurement == -1.0) { return; }
+	SWRMeasurements[MeanValuePointer] = SWRMeasurement;
 	
-	result = readFwdPwr();
-	FwdPwrMeasurements[MeanValuePointer] = result;
+	FwdPwrMeasurement = this->readInternalFwdPwr();
+	FwdPwrMeasurements[MeanValuePointer] = FwdPwrMeasurement;
 	
-	result = readRevPwr();
-	RevPwrMeasurements[MeanValuePointer] = result;
+	RevPwrMeasurement = this->readInternalRevPwr();
+	RevPwrMeasurements[MeanValuePointer] = RevPwrMeasurement;
 
 	// Check if last position in array is reached
 	if ((MeanValuePointer+1) >=  MeanValuesNumber) {

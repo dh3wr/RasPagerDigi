@@ -110,9 +110,12 @@ int main(int argc, char** argv) {
     myScreensaverMenu.addSubmenuItem(&myInfoNetwork);
     myScreensaverMenu.addSubmenuItem(&myInfoNtp);
     myScreensaverMenu.addSubmenuItem(&myInfoHardware);
+	
+	// Testing of LEDs
     myExtension.setPTTLED(true);
     myExtension.setMasterConnectedLED(true);
-    cout << "Screensaver bereit!" << std::endl;
+    
+	cout << "Screensaver bereit!" << std::endl;
 
 
 	auto p = unique_ptr<IProcess>(new ServerProcess(myExtension, 12345));
@@ -121,7 +124,7 @@ int main(int argc, char** argv) {
     int count = 0;
     int count2 = 0;
 	int countMeasurementsCyclic = 0;
-	myExtension.setOutputPower_Watt(2.7);    
+	myExtension.setOutputPower_Watt(4.3);
 
 /*	while (1) {
 
