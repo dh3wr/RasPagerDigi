@@ -22,6 +22,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -38,7 +39,7 @@ public class MainWindow extends JFrame {
 	
 	private JPanel main; 
 	private final int WIDTH = 450;
-	private final int HEIGHT = 350;
+	private final int HEIGHT = 400;
 	
 	private TrayIcon trayIcon;
 	
@@ -48,6 +49,8 @@ public class MainWindow extends JFrame {
 	private JButton startButton;
 	private JTextField masterIP;
 	private JTextField port;
+	private JTextField freqErrCorr;
+	private JTextField modDev;
 	private Canvas slotDisplay;
 	
 	private Log log = null;
@@ -226,7 +229,7 @@ public class MainWindow extends JFrame {
 		
 		
 		// server start button bounds
-		Rectangle startButtonBounds = new Rectangle(277, 283, 150, 18);
+		Rectangle startButtonBounds = new Rectangle(274, 340, 150, 18);
 		
 		// server start button
 		startButton = new JButton("Server starten");
@@ -350,11 +353,11 @@ public class MainWindow extends JFrame {
 		configurationPanel.add(masterRemove);
 		
 		// port bounds
-		Rectangle portBounds = new Rectangle(50, masterListBounds.y + masterListBounds.height + 13, 50, 18);
+		Rectangle portBounds = new Rectangle(masterListBounds.x+masterListBounds.width-50, masterListBounds.y + masterListBounds.height + 13, 50, 18);
 		
 		// port label
 		JLabel portLabel = new JLabel("Port:");
-		portLabel.setBounds(portBounds.x - 50, portBounds.y, 50, 18);
+		portLabel.setBounds(portBounds.x - 35, portBounds.y, 50, 18);
 		configurationPanel.add(portLabel);
 		
 		// port
@@ -381,12 +384,73 @@ public class MainWindow extends JFrame {
 		});
 		configurationPanel.add(port);
 		
+		// freq err corr bounds
+		Rectangle freqErrCorrBounds = new Rectangle(masterListBounds.x+masterListBounds.width-50, portBounds.y + portBounds.height + 10, 50, 18);
+		
+		JLabel freqErrCorrLabel = new JLabel("Freq Err Corr:");
+		freqErrCorrLabel.setBounds(freqErrCorrBounds.x - 90, freqErrCorrBounds.y, 90, 18);
+		configurationPanel.add(freqErrCorrLabel);
+		
+		freqErrCorr = new JTextField();
+		freqErrCorr.setBounds(freqErrCorrBounds);
+		freqErrCorr.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent event) {
+				char key = event.getKeyChar();
+
+				String valid = "-0123456789";
+				if(valid.indexOf(key) == -1) {
+					event.consume();
+				}
+				
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent arg0) { }
+			
+			@Override
+			public void keyPressed(KeyEvent arg0) { }
+		});
+		configurationPanel.add(freqErrCorr);
+		/////////
+		
+		// mode dev bounds
+				Rectangle modDevBounds = new Rectangle(masterListBounds.x+masterListBounds.width-50, freqErrCorrBounds.y + freqErrCorrBounds.height + 10, 50, 18);
+				
+				JLabel modDevLabel = new JLabel("Mod Dev:");
+				modDevLabel.setBounds(modDevBounds.x - 65, modDevBounds.y, 90, 18);
+				configurationPanel.add(modDevLabel);
+				
+				modDev = new JTextField();
+				modDev.setBounds(modDevBounds);
+				modDev.addKeyListener(new KeyListener() {
+					
+					@Override
+					public void keyTyped(KeyEvent event) {
+						char key = event.getKeyChar();
+
+						// check if key is between 0 and 9
+						if(key > '9' || key < '0') {
+							event.consume();
+						}
+						
+					}
+					
+					@Override
+					public void keyReleased(KeyEvent arg0) { }
+					
+					@Override
+					public void keyPressed(KeyEvent arg0) { }
+				});
+				configurationPanel.add(modDev);
+				/////////
 		
 		// config button bounds
-		Rectangle configButtonBounds = new Rectangle(0, portBounds.y + portBounds.height + 13, 130, 18);
+		Rectangle configButtonBounds = new Rectangle(47, portBounds.y + portBounds.height + 70, 100, 18);
 		
 		// config apply button
-		JButton applyButton = new JButton("Übernehmen");
+		JButton applyButton = new JButton("übernehmen");
 		applyButton.addActionListener(new ActionListener() {
 			
 			@Override
@@ -443,7 +507,7 @@ public class MainWindow extends JFrame {
 		
 		
 		configButtonBounds.x += configButtonBounds.width + 10;
-		configButtonBounds.width = 120;
+		configButtonBounds.width = 100;
 		
 		
 		// config save button
@@ -526,6 +590,8 @@ public class MainWindow extends JFrame {
 	public void setConfig() {
 		// set port
 		Main.config.setPort(Integer.parseInt(port.getText()));
+		Main.config.setFreqErrCorr(Integer.parseInt(freqErrCorr.getText()));
+		Main.config.setModDev(Integer.parseInt(modDev.getText()));
 		
 		// set master
 		String master = "";
@@ -535,7 +601,7 @@ public class MainWindow extends JFrame {
 		Main.config.setMaster(master);
 		
 		if(Main.running) {
-			if(showConfirm("Config Übernehmen", "Der Server läuft bereits. Um die Einstellungen zu übernehmen, muss der Server neugestartet werden. Soll er jetzt neugestartet werden?")) {
+			if(showConfirm("Config übernehmen", "Der Server läuft bereits. Um die Einstellungen zu übernehmen, muss der Server neugestartet werden. Soll er jetzt neugestartet werden?")) {
 				Main.stopServer(false);
 				Main.startServer(false);
 				
@@ -547,6 +613,8 @@ public class MainWindow extends JFrame {
 	public void loadConfig() {
 		// load port
 		port.setText("" + Main.config.getPort());
+		freqErrCorr.setText("" + Main.config.getFreqErrCorr());
+		modDev.setText("" + Main.config.getModDev());
 		
 		// load master
 		masterList.removeAll();

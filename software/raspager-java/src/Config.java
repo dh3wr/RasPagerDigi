@@ -14,12 +14,16 @@ public class Config {
 	private final String DEFAULT_NAME = "[RasPager v1.0-SCP-#2345678]";
 	private final int DEFAULT_PORT = 1337;
 	private final int DEFAULT_LOGLEVEL = 0;
+	private final int DEFAULT_FREQ_ERR_CORR = 0;
+	private final int DEFAULT_MOD_DEV = 13;
 	
 	// current
 	private String name = DEFAULT_NAME;
 	private int port = 0;
 	private int logLevel = Log.NORMAL;
 	private String [] master = null;
+	private int freq_err_corr = 0;
+	private int mod_dev = 0;
 	
 	// log
 	private Log log = null;
@@ -105,7 +109,40 @@ public class Config {
 						}
 						
 					}
+				} else if(p[0].equals("freq_err_corr")) {
 					
+					if(p.length > 1) {
+					
+						try {
+							this.freq_err_corr = Integer.parseInt(p[1]);
+						}
+						catch(NumberFormatException e) {
+							
+							this.freq_err_corr = DEFAULT_FREQ_ERR_CORR;
+							
+							log("Frequency Error Correction ist auf keinen gültigen Wert gesetzt!", Log.ERROR);
+							log("Verwende Default-Wert (" + this.DEFAULT_FREQ_ERR_CORR + ") ...", Log.INFO);
+							
+						}
+						
+					}	
+				} else if(p[0].equals("mod_dev")) {
+					
+					if(p.length > 1) {
+					
+						try {
+							this.mod_dev = Integer.parseInt(p[1]);
+						}
+						catch(NumberFormatException e) {
+							
+							this.mod_dev = DEFAULT_MOD_DEV;
+							
+							log("Modulation Deviation ist auf keinen gültigen Wert gesetzt!", Log.ERROR);
+							log("Verwende Default-Wert (" + this.DEFAULT_MOD_DEV + ") ...", Log.INFO);
+							
+						}
+						
+					}	
 				} else if(p[0].equals("master")) {
 					if(p.length > 1) {
 						setMaster(p[1]);						
@@ -161,6 +198,20 @@ public class Config {
 			log("Verwende Default-Port (1337) ...", Log.INFO);
 		}
 		
+		if(this.freq_err_corr == 0) {
+			this.freq_err_corr = this.DEFAULT_FREQ_ERR_CORR;
+			
+			log("Kein Port angegeben!", Log.ERROR);
+			log("Verwende Default-Wert ...", Log.INFO);
+		}
+		
+		if(this.mod_dev == 0) {
+			this.mod_dev = this.DEFAULT_MOD_DEV;
+			
+			log("Kein Port angegeben!", Log.ERROR);
+			log("Verwende Default-Wert ...", Log.INFO);
+		}
+		
 		log(this.toString(), Log.INFO);
 	}
 	
@@ -171,7 +222,9 @@ public class Config {
 		String[] lines = {
 						  "#[slave config]", "# Port", "port=" + this.port, "# Erlaubte Master getrennt durch Leerzeichen",
 						  "master=" + masterToString(),
-						  "# LogLevel", "loglevel=" + this.logLevel
+						  "# LogLevel", "loglevel=" + this.logLevel,
+						  "# FreqErrCorr", "freq_err_corr="+this.freq_err_corr,
+						  "# ModDev", "mod_dev="+this.mod_dev
 						 };
 		
 		for(int i = 0; i < lines.length; i++) {
@@ -189,6 +242,8 @@ public class Config {
 		this.name = DEFAULT_NAME;
 		this.port = DEFAULT_PORT;
 		this.logLevel = DEFAULT_LOGLEVEL;
+		this.freq_err_corr=DEFAULT_FREQ_ERR_CORR;
+		this.mod_dev=DEFAULT_MOD_DEV;
 		
 		if(resetMaster) {
 			this.master = null;
@@ -201,6 +256,22 @@ public class Config {
 	
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public int getFreqErrCorr() {
+		return this.freq_err_corr;
+	}
+	
+	public void setFreqErrCorr(int value) {
+		this.freq_err_corr = value;
+	}
+	
+	public int getModDev() {
+		return this.mod_dev;
+	}
+	
+	public void setModDev(int value) {
+		this.mod_dev = value;
 	}
 	
 	public int getPort() {
@@ -309,6 +380,8 @@ public class Config {
 		s += "port=" + this.port + "\n";
 		s += "master=" + masterToString() + "\n";
 		s += "loglevel=" + this.logLevel + "\n";
+		s += "freq_err_corr=" + this.freq_err_corr + "\n";
+		s += "mod_dev=" + this.mod_dev + "\n";
 		
 		return s;
 	}

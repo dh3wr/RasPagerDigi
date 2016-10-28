@@ -13,6 +13,7 @@ public class RadioComm {
 
     public interface RadioLink extends Library {
         public com.sun.jna.Pointer setup();
+        public void setParams(com.sun.jna.Pointer radioLinkPointer, int freq_err, int mod_dev);
         public boolean pttOn(com.sun.jna.Pointer radioLinkPointer);
         public void pttOff(com.sun.jna.Pointer radioLinkPointer);
         public void sendByte(int data);
@@ -44,6 +45,11 @@ public class RadioComm {
 		}
 	}
 	
+	// set params
+		public void setParams(int freq_err, int mod_dev) {
+			this.radioLink.setParams(this.radioLinkPointer, freq_err, mod_dev);
+		}
+		
 	// set pin on
 	public void setOn() {
 		if(!this.radioLink.pttOn(this.radioLinkPointer)){

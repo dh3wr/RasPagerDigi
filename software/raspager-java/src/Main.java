@@ -3,7 +3,7 @@ package rasPager;
 import java.util.Timer;
 
 public class Main {
-	public static final String VERSION = "1.0";
+	public static final String VERSION = "1.1";
 	
 	public static ServerThread server;
 	public static MessageQueue messageQueue;
@@ -167,6 +167,8 @@ public class Main {
 				return false;
 			}
 		}
+		
+		radioComm.setParams(config.getFreqErrCorr(), config.getModDev());
 		
 		return true;
 	}
