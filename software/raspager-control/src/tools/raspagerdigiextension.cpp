@@ -200,13 +200,17 @@ double RaspagerDigiExtension::readInternalRevPwr(){
 
 double RaspagerDigiExtension::readInternalSWR(){
     double res;
-    double r;
-    double FwdPwr = readFwdPwr();
-    double RevPwr = readRevPwr();
-    if (FwdPwr == 0.0) {
+    
+	// reflection cooefficient
+	double r;
+    // Get Measurements assign them directly to the internal variables
+	FwdPwrMeasurement = readInternalFwdPwr();
+    RevPwrMeasurement = readInternalRevPwr();
+
+    if (FwdPwrMeasurement == 0.0) {
 	return -1;
     } else {
-	r = sqrt(RevPwr/FwdPwr);
+	r = sqrt(RevPwrMeasurement/FwdPwrMeasurement);
 	res = (1+r)/(1-r);
 	return res;
     }
@@ -439,10 +443,9 @@ void RaspagerDigiExtension::MakeMeasurementCyclic() {
 	if (SWRMeasurement == -1.0) { return; }
 	SWRMeasurements[MeanValuePointer] = SWRMeasurement;
 	
-	FwdPwrMeasurement = this->readInternalFwdPwr();
+	// Variables are already set in readInternalSWR()
 	FwdPwrMeasurements[MeanValuePointer] = FwdPwrMeasurement;
 	
-	RevPwrMeasurement = this->readInternalRevPwr();
 	RevPwrMeasurements[MeanValuePointer] = RevPwrMeasurement;
 
 	// Check if last position in array is reached
