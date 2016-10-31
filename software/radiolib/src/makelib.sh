@@ -1,1 +1,1 @@
-gcc -fPIC -o libradiolink.so -shared radiolink.cpp adf7012.cpp
+gcc -fPIC -shared -o libradiolink.so -lpthread -lstdc++ -lwiringPi *.cpp

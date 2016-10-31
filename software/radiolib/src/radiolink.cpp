@@ -105,3 +105,5 @@ extern "C" bool sendByte(long data) {
     delayMicroseconds(50);
   }
 }
+extern "C" void setParams(long a, long b) {
+}
