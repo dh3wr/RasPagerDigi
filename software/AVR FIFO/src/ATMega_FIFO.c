@@ -114,8 +114,6 @@ FIFO_Init(buffer, uint8_t, 512);
 //ISR(TIMER2_COMP_vect)
 
 ISR(TIMER1_COMPA_vect) {
-{ // TIMER1_COMPA_vect()
-
 	// Handle shifting out of data
 	if(!FIFO_Empty(buffer))      // Data in buffer?
 	{
@@ -137,20 +135,13 @@ ISR(TIMER1_COMPA_vect) {
 		CLR_OUTPUT(RPI_SHIFTING);  // Tell RPI that no data is shifted out at the moment
 	}
 
-} // TIMER1_COMPA_vect()
-// ============================================================================
-
-
+}
 
 // ############################################################################
 // #                               Main-Loop                                  #
 // ############################################################################
 
-
-
-int main()
-// ============================================================================
-{ // main()
+int main() {
 /* Changes by DH3WR, 22.1.17
 Use Timer 1 instead of Timer 2, because it's 16 Bit
 
@@ -173,7 +164,7 @@ Use Timer 1 instead of Timer 2, because it's 16 Bit
 	TCCR1B = (1 << WGM12) | (1 << CS10);
 	OCR1A = 6666;
 	TIMSK = (1 << OCIE1A);
-  
+
 	// Enable outputs
 	INIT_OUTPUT(TRM_DATA);
 	INIT_OUTPUT(RPI_HANDSHAKE);
