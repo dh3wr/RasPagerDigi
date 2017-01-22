@@ -110,10 +110,11 @@ FIFO_Init(buffer, uint8_t, 512);
 // ############################################################################
 
 
+// Changes by DH3WR: Use Timer 1 instead of Timer 2
+//ISR(TIMER2_COMP_vect)
 
-ISR(TIMER2_COMP_vect)
-// ============================================================================
-{ // TIMER2_COMP_vect()
+ISR(TIMER1_COMPA_vect) {
+{ // TIMER1_COMPA_vect()
 
 	// Handle shifting out of data
 	if(!FIFO_Empty(buffer))      // Data in buffer?
@@ -136,7 +137,7 @@ ISR(TIMER2_COMP_vect)
 		CLR_OUTPUT(RPI_SHIFTING);  // Tell RPI that no data is shifted out at the moment
 	}
 
-} // TIMER2_COMP_vect()
+} // TIMER1_COMPA_vect()
 // ============================================================================
 
 
@@ -150,6 +151,8 @@ ISR(TIMER2_COMP_vect)
 int main()
 // ============================================================================
 { // main()
+/* Changes by DH3WR, 22.1.17
+Use Timer 1 instead of Timer 2, because it's 16 Bit
 
 	// Initialize timer for 1200 Hz
 	TCCR2 = (0<<FOC2)  // No force of output compare match
@@ -162,7 +165,15 @@ int main()
 	| (0<<CS20); // Clock /  256 (from prescaler)
 	OCR2  = F_CPU / 64 / 1207;
 	TIMSK = (1<<OCIE2);
-
+*/
+	// Initialize timer 1 for 1200 Hz
+	// No Output on compare match, no PWM
+	TCCR1A = 0x00;
+	// Clear Timer on match, CPU-Clock as input
+	TCCR1B = (1 << WGM12) | (1 << CS10);
+	OCR1A = 6666;
+	TIMSK = (1 << OCIE1A);
+  
 	// Enable outputs
 	INIT_OUTPUT(TRM_DATA);
 	INIT_OUTPUT(RPI_HANDSHAKE);
