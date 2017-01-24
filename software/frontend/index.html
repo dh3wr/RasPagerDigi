@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>RasPagerDigi DB0EIF</title>
+    <link type="text/css" rel="stylesheet" href="style.css">
+    <script src="lib/vue.js"></script>
+	
+			<script type="text/javascript" src="lib/jquery.min.js"></script>
+		<style type="text/css">
+.highcharts-yaxis-grid .highcharts-grid-line {
+	display: none;
+}
+		</style>
+		<script type="text/javascript">
+$(function () {
+
+    var gaugeOptions = {
+
+        chart: {
+            type: 'solidgauge'
+        },
+
+        title: null,
+
+        pane: {
+            center: ['50%', '85%'],
+            size: '140%',
+            startAngle: -90,
+            endAngle: 90,
+            background: {
+                backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
+                innerRadius: '60%',
+                outerRadius: '100%',
+                shape: 'arc'
+            }
+        },
+
+        tooltip: {
+            enabled: false
+        },
+
+        // the value axis
+        yAxis: {
+            stops: [
+                [0.1, '#55BF3B'], // green
+                [0.5, '#DDDF0D'], // yellow
+                [0.9, '#DF5353'] // red
+            ],
+            lineWidth: 0,
+            minorTickInterval: null,
+            tickAmount: 2,
+            title: {
+                y: -70
+            },
+            labels: {
+                y: 16
+            }
+        },
+
+        plotOptions: {
+            solidgauge: {
+                dataLabels: {
+                    y: 5,
+                    borderWidth: 0,
+                    useHTML: true
+                }
+            }
+        }
+    };
+
+    // The voltage gauge
+    var chartVoltage = Highcharts.chart('container-voltage', Highcharts.merge(gaugeOptions, {
+        yAxis: {
+            min: 0,
+            max: 16,
+            title: {
+                text: 'Voltage'
+            }
+        },
+
+        credits: {
+            enabled: false
+        },
+
+        series: [{
+            name: 'Voltage',
+            data: [80],
+            dataLabels: {
+                format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}</span><br/>' +
+                       '<span style="font-size:12px;color:silver">V</span></div>'
+            },
+            tooltip: {
+                valueSuffix: ' V'
+            }
+        }]
+
+    }));
+
+    // The Ampere gauge
+    var chartAmpere = Highcharts.chart('container-ampere', Highcharts.merge(gaugeOptions, {
+        yAxis: {
+            min: 0,
+            max: 10,
+            title: {
+                text: 'Ampere'
+            }
+        },
+
+        series: [{
+            name: 'Ampere',
+            data: [1],
+            dataLabels: {
+                format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y:.1f}</span><br/>' +
+                       '<span style="font-size:12px;color:silver">A</span></div>'
+            },
+            tooltip: {
+                valueSuffix: ' A'
+            }
+        }]
+
+    }));
+});
+
+		</script>
+    <script src="./main.js"></script>
+	
+</head>
+
+<body>
+	<div id="wrapper">
+		<div id="boxes">
+			<div class="box">
+			  <div class="box-header">
+				<h3>Spannung und Strom</h3>
+			  </div>
+			<div class="box-content">	
+<!--
+				<div id="container-voltage" style="width: 300px; height: 200px; float: left"></div>
+				<div id="container-ampere" style="width: 300px; height: 200px; float: left"></div>
+-->
+			</div>
+		</div>
+	</div>
+	<footer>
+		<div class="logo">
+			<a href="http://www.afu.rwth-aachen.de"><img src="logo.png" alt="Logo"></a>
+		</div>
+		<div>
+<!--			<p>
+				<b>RustPager {{version}}</b>
+			</p>
+-->
+			<p>
+				&copy; 2017 RWTH Amateurfunkgruppe
+			</p>
+			<p>
+				<a href="https://github.com/dh3wr/RasPagerDigi">GitHub</a>
+				&bull; <a href="https://github.com/dh3wr/RasPagerDigi/issues">Report Issues</a>
+				&bull; <a href="https://www.afu.rwth-aachen.de/ueber-uns/spendenaufruf">Donate</a>
+			</p>
+		</div>
+	  </footer>
+	</div>
+	
+	<script type="text/javascript" src="lib/jquery.min.js"></script>
+	<style type="text/css">
+		.highcharts-yaxis-grid .highcharts-grid-line {
+			display: none;
+		}
+	</style>
+	
+	
+	<script src="lib/highcharts/highcharts.js"></script>
+	<script src="lib/highcharts/highcharts-more.js"></script>
+
+	<script src="lib/highcharts/modules/solid-gauge.js"></script>
+
+	<div style="width: 600px; height: 400px; margin: 0 auto">
+		<div id="container-voltage" style="width: 300px; height: 200px; float: left"></div>
+		<div id="container-ampere" style="width: 300px; height: 200px; float: left"></div>
+	</div>
+
+  </body>
+</html>
