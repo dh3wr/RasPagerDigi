@@ -36,17 +36,29 @@
 #include "tools/serverprocess.h"
 #include "tools/ProcessManager.h"
 
+// Not yet working
+//#include "websocket/WebSocketServer.h"
+
+// Instead include the server here
+#include "websocket/server_ws.hpp"
+#include "json_spirit.h"
+
 using namespace std;
 
-#define PROG_VERSION	"0.0.12"
+#define PROG_VERSION	"0.0.13"
 #define COPYRIGHTZEILE1	"RasPagerDigi by DH3WR"
-#define COPYRIGHTZEILE2	"DF6EF, Delissen 0.0.11"
+#define COPYRIGHTZEILE2	"DF6EF, Delissen 0.0.13"
 
 #define TASTERDELAY_MS	50
 
 bool skipDisplaySetup;
 string master, activeslots;
 static ProcessManager g_pm;
+
+// WEBSOCKETSERVER
+typedef SimpleWeb::SocketServer<SimpleWeb::WS> WsServer;
+// END WEBSOCKETSERVER
+
 
 int main(int argc, char** argv) {
     skipDisplaySetup = false; // TRUE: Allows usage without Display attatched.
@@ -58,6 +70,41 @@ int main(int argc, char** argv) {
     master = "DB0ABC";
     RaspagerDigiExtension myExtension(skipDisplaySetup);
     OneWire myOneWire;
+	
+	
+// WEBSOCKETSERVER
+    //WebSocket (WS)-server at port 8080 using 1 thread
+    WsServer server;
+    server.config.port=8080;
+
+    //Example 3: Echo to all WebSocket endpoints
+    //  Sending received messages to all connected clients
+    //  Test with the following JavaScript on more than one browser windows:
+    //    var ws=new WebSocket("ws://localhost:8080/echo_all");
+    //    ws.onmessage=function(evt){console.log(evt.data);};
+    //    ws.send("test");
+    auto& echo_all=server.endpoint["^/echo_all/?$"];
+    echo_all.on_message=[&server](shared_ptr<WsServer::Connection> /*connection*/, shared_ptr<WsServer::Message> message) {
+        auto message_str=message->string();
+        
+        //echo_all.get_connections() can also be used to solely receive connections on this endpoint
+        for(auto a_connection: server.get_connections()) {
+            auto send_stream=make_shared<WsServer::SendStream>();
+            *send_stream << message_str;
+            
+            //server.send is an asynchronous function
+            server.send(a_connection, send_stream);
+        }
+    };
+    
+    thread server_thread([&server](){
+        //Start WS-server
+        server.start();
+    });
+    
+    //Wait for server to start so that the client can connect
+    this_thread::sleep_for(chrono::seconds(1));
+// END WEBSOCKETSERVER
 	
 	
     // Hauptmenü
@@ -161,6 +208,39 @@ int main(int argc, char** argv) {
 
 		myExtension.MakeMeasurementCyclic();
 
+// WEBSOCKETSERVER		
+		// Read ADC Values
+		double wsfwdpwr = myExtension.readFwdPwr();
+		double wsrevpwr = myExtension.readRevPwr();
+		double wsswr = myExtension.readSWR();
+		double wsvoltage = myExtension.readVoltage();
+		double wscurrent = myExtension.readCurrent();
+
+
+
+		
+		json_spirit::Object addr_obj;
+		addr_obj.push_back( json_spirit::Pair( "Voltage", round(wsvoltage * 100.0) / 100.0 ) );
+		addr_obj.push_back( json_spirit::Pair( "Current", round(wscurrent * 100.0) / 100.0 ) );
+		addr_obj.push_back( json_spirit::Pair( "PowerForward", 12.3 ) );
+		addr_obj.push_back( json_spirit::Pair( "PowerForwardLastTX", 10.3 ) );
+		addr_obj.push_back( json_spirit::Pair( "PowerReflect", 1.3 ) );
+		addr_obj.push_back( json_spirit::Pair( "PowerReflectLastTX", 2.0 ) );
+		addr_obj.push_back( json_spirit::Pair( "PowerVSWR", 1.3 ) );
+		addr_obj.push_back( json_spirit::Pair( "PowerVSWRLastTX", 1.4 ) );
+		addr_obj.push_back( json_spirit::Pair( "Slots", "1283ABC" ) );
+
+	
+		std::string testinfo = json_spirit::write_formatted(addr_obj);
+		for(auto a_connection: server.get_connections()) {
+			auto send_stream=make_shared<WsServer::SendStream>();
+			*send_stream << testinfo;
+			
+			//server.send is an asynchronous function
+			server.send(a_connection, send_stream);
+		}
+// END WEBSOCKETSERVER
+		
 			
 		// Keep Measurements for Fwd und Rev Power as well as SWR up-to-date_order
 		if (countMeasurementsCyclic >= 20)
@@ -215,6 +295,10 @@ int main(int argc, char** argv) {
 
 	g_pm.shutdown();
 	g_pm.wait();
+
+// WEBSOCKETSERVER
+	server_thread.join();
+// END WEBSOCKETSERVER
 
     return 0;
 }
