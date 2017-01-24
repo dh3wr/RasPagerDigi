@@ -1,3 +1,7 @@
+var chartVoltage;
+var chartAmpere;
+
+
 var vm = new Vue({
     el: "#wrapper",
     created() {
@@ -47,7 +51,7 @@ var vm = new Vue({
                 }
             }
 			        // Voltage
-			var point,
+			var point;
 
 			if (chartVoltage) {
 				point = chartVoltage.series[0].points[0];
@@ -60,7 +64,7 @@ var vm = new Vue({
 			if (chartAmpere) {
 				point = chartAmpere.series[0].points[0];
 
-				point.update(this.Ampere);
+				point.update(this.Current);
 			}
 
 			
@@ -94,6 +98,7 @@ var vm = new Vue({
 */
     }
 });
+
 
 $(function () {
 
@@ -152,7 +157,7 @@ $(function () {
     };
 
     // The voltage gauge
-    var chartVoltage = Highcharts.chart('container-voltage', Highcharts.merge(gaugeOptions, {
+    chartVoltage = Highcharts.chart('container-voltage', Highcharts.merge(gaugeOptions, {
         yAxis: {
             min: 0,
             max: 16,
@@ -181,7 +186,7 @@ $(function () {
     }));
 
     // The Ampere gauge
-    var chartAmpere = Highcharts.chart('container-ampere', Highcharts.merge(gaugeOptions, {
+    chartAmpere = Highcharts.chart('container-ampere', Highcharts.merge(gaugeOptions, {
         yAxis: {
             min: 0,
             max: 10,
