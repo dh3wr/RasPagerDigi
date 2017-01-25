@@ -1,5 +1,6 @@
 var chartVoltage;
 var chartAmpere;
+var chartPower;
 
 
 var vm = new Vue({
@@ -66,8 +67,16 @@ var vm = new Vue({
 
 				point.update(this.Current);
 			}
-
 			
+			// Power
+			if (chartPower) { // the chart may be destroyed
+                var left = chartPower.series[0].points[0],
+					right = chartPower.series[1].points[0];
+
+				left.update(this.PowerForward, false);
+				right.update(this.PowerReflect, false);
+				chartPower.redraw();
+			}
         },
         onclose: function(event) {
             if (this.connected) {
@@ -209,5 +218,142 @@ $(function () {
         }]
 
     }));
-});
+	
+	chartPower = Highcharts.chart('container-power', {
 
+        chart: {
+            type: 'gauge',
+            plotBorderWidth: 1,
+            plotBackgroundColor: {
+                linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                stops: [
+                    [0, '#FFF4C6'],
+                    [0.3, '#FFFFFF'],
+                    [1, '#FFF4C6']
+                ]
+            },
+            plotBackgroundImage: null,
+            height: 200
+        },
+
+        title: {
+            text: 'Power'
+        },
+
+        pane: [{
+            startAngle: -45,
+            endAngle: 45,
+            background: null,
+            center: ['25%', '145%'],
+            size: 300
+        }, {
+            startAngle: -45,
+            endAngle: 45,
+            background: null,
+            center: ['75%', '145%'],
+            size: 300
+        }],
+
+        tooltip: {
+            enabled: false
+        },
+
+        yAxis: [{
+            min: 0,
+            max: 40,
+            minorTickPosition: 'outside',
+            tickPosition: 'outside',
+            labels: {
+                rotation: 'auto',
+                distance: 20
+            },
+            plotBands: [{
+                from: 0,
+                to: 30,
+                color: '#00FF00',
+                innerRadius: '100%',
+                outerRadius: '105%'
+            }, {
+                from: 30,
+                to: 35,
+                color: '#FFFF00',
+                innerRadius: '100%',
+                outerRadius: '105%'
+			}, {
+                from: 35,
+                to: 40,
+                color: '#C02316',
+                innerRadius: '100%',
+                outerRadius: '105%'
+			}],
+            pane: 0,
+            title: {
+                text: 'Forward Power<br/><span style="font-size:10px">Watt</span>',
+                y: -40
+            }
+        }, {
+            min: 0,
+            max: 40,
+            minorTickPosition: 'outside',
+            tickPosition: 'outside',
+            labels: {
+                rotation: 'auto',
+                distance: 20
+            },
+            plotBands: [{
+                from: 0,
+                to: 3,
+                color: '#00FF00',
+                innerRadius: '100%',
+                outerRadius: '105%'
+            }, {
+                from: 3,
+                to: 7,
+                color: '#FFFF00',
+                innerRadius: '100%',
+                outerRadius: '105%'
+			}, {
+                from: 7,
+                to: 40,
+                color: '#C02316',
+                innerRadius: '100%',
+                outerRadius: '105%'
+			}],
+            pane: 1,
+            title: {
+                text: 'Reflected Power<br/><span style="font-size:10px">Watt</span>',
+                y: -40
+            }
+        }],
+
+        plotOptions: {
+            gauge: {
+                dataLabels: {
+                    enabled: true,
+					align: 'center',
+					y: -40,
+					borderWidth: 0,
+	                format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+						((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y:.2f}</span></div>',
+                },
+                dial: {
+                    radius: '100%'
+                }
+            }
+        },
+
+
+        series: [{
+            name: 'Channel A',
+            data: [0],
+            yAxis: 0
+        }, {
+            name: 'Channel B',
+            data: [0],
+            yAxis: 1
+        }]
+
+    });
+
+
+});
