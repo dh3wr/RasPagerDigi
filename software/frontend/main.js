@@ -2,7 +2,6 @@ var chartVoltage;
 var chartAmpere;
 var chartPower;
 
-
 var vm = new Vue({
     el: "#wrapper",
     created() {
@@ -70,11 +69,18 @@ var vm = new Vue({
 			
 			// Power
 			if (chartPower) { // the chart may be destroyed
-                var left = chartPower.series[0].points[0],
-					right = chartPower.series[1].points[0];
+                var fwd = chartPower.series[0].points[0],
+					refl = chartPower.series[1].points[0],
+					vswr = chartPower.series[2].points[0];
 
-				left.update(this.PowerForward, false);
-				right.update(this.PowerReflect, false);
+				fwd.update(this.PowerForward, false);
+				refl.update(this.PowerReflect, false);
+				if (this.PowerVSWR < 0) {
+					vswr.update(0, false);					
+				} else {
+					vswr.update(this.PowerVSWR, false);					
+				}
+				
 				chartPower.redraw();
 			}
         },
@@ -138,11 +144,6 @@ $(function () {
 
         // the value axis
         yAxis: {
-            stops: [
-                [0.1, '#55BF3B'], // green
-                [0.5, '#DDDF0D'], // yellow
-                [0.9, '#DF5353'] // red
-            ],
             lineWidth: 0,
             minorTickInterval: null,
             tickAmount: 2,
@@ -172,7 +173,33 @@ $(function () {
             max: 16,
             title: {
                 text: 'Voltage'
-            }
+            },
+            stops: [
+                [0.1, '#DF5353'], // red
+                [0.68, '#55BF3B'], // green
+                [0.875, '#DF5353'] // red
+
+
+			],
+			plotBands: [{
+                from: 0,
+                to: 11,
+                color: '#C02316',
+                innerRadius: '100%',
+                outerRadius: '103%'
+            }, {
+                from: 11,
+                to: 14,
+                color: '#00FF00',
+                innerRadius: '100%',
+                outerRadius: '103%'
+			}, {
+                from: 14,
+                to: 16,
+                color: '#C02316',
+                innerRadius: '100%',
+                outerRadius: '103%'
+			}],
         },
 
         credits: {
@@ -184,7 +211,7 @@ $(function () {
             data: [80],
             dataLabels: {
                 format: '<div style="text-align:center"><span style="font-size:25px;color:' +
-                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}</span><br/>' +
+                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y:.1f}</span><br/>' +
                        '<span style="font-size:12px;color:silver">V</span></div>'
             },
             tooltip: {
@@ -201,7 +228,32 @@ $(function () {
             max: 10,
             title: {
                 text: 'Ampere'
-            }
+            },
+            stops: [
+                [0.1, '#55BF3B'], // green
+                [0.5, '#DDDF0D'], // yellow
+                [0.6, '#DF5353'] // red
+            ],
+			plotBands: [{
+                from: 0,
+                to: 5,
+                color: '#00FF00',
+                innerRadius: '100%',
+                outerRadius: '103%'
+            }, {
+                from: 5,
+                to: 6,
+                color: '#FFFF00',
+                innerRadius: '100%',
+                outerRadius: '103%'
+			}, {
+                from: 6,
+                to: 10,
+                color: '#C02316',
+                innerRadius: '100%',
+                outerRadius: '103%'
+			}],
+
         },
 
         series: [{
@@ -233,24 +285,32 @@ $(function () {
                 ]
             },
             plotBackgroundImage: null,
-            height: 200
+            height: 150,
+			spacingLeft: 1,
+			spacingRight: 1
         },
 
         title: {
-            text: 'Power'
+            text: null //'Power'
         },
 
         pane: [{
             startAngle: -45,
             endAngle: 45,
             background: null,
-            center: ['25%', '145%'],
+            center: ['16%', '145%'],
             size: 300
         }, {
             startAngle: -45,
             endAngle: 45,
             background: null,
-            center: ['75%', '145%'],
+            center: ['50%', '145%'],
+            size: 300
+        }, {
+            startAngle: -45,
+            endAngle: 45,
+            background: null,
+            center: ['84%', '145%'],
             size: 300
         }],
 
@@ -324,6 +384,39 @@ $(function () {
                 text: 'Reflected Power<br/><span style="font-size:10px">Watt</span>',
                 y: -40
             }
+        }, {
+		    min: 1,
+            max: 3,
+            minorTickPosition: 'outside',
+            tickPosition: 'outside',
+            labels: {
+                rotation: 'auto',
+                distance: 20
+            },
+            plotBands: [{
+                from: 1,
+                to: 1.4,
+                color: '#00FF00',
+                innerRadius: '100%',
+                outerRadius: '105%'
+            }, {
+                from: 1.4,
+                to: 2,
+                color: '#FFFF00',
+                innerRadius: '100%',
+                outerRadius: '105%'
+			}, {
+                from: 2,
+                to: 3,
+                color: '#C02316',
+                innerRadius: '100%',
+                outerRadius: '105%'
+			}],
+            pane: 2,
+            title: {
+                text: 'VSWR<br/><span style="font-size:10px"></span>',
+                y: -40
+            }
         }],
 
         plotOptions: {
@@ -334,7 +427,7 @@ $(function () {
 					y: -40,
 					borderWidth: 0,
 	                format: '<div style="text-align:center"><span style="font-size:25px;color:' +
-						((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y:.2f}</span></div>',
+						((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y:.1f}</span></div>',
                 },
                 dial: {
                     radius: '100%'
@@ -344,16 +437,63 @@ $(function () {
 
 
         series: [{
-            name: 'Channel A',
+            name: 'Fwd Power',
             data: [0],
             yAxis: 0
         }, {
-            name: 'Channel B',
+            name: 'Ref Power',
             data: [0],
             yAxis: 1
+        }, {
+            name: 'VSWR',
+            data: [1],
+            yAxis: 2,
+            dataLabels: {
+                format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">1:{y:.1f}</span></div>'
+            },
+
         }]
 
     });
+
+	var $document = $(document);
+	var selector = '[data-rangeslider]';
+	var $element = $(selector);
+
+	 // For ie8 support
+	var textContent = ('textContent' in document) ? 'textContent' : 'innerText';
+
+	// Example functionality to demonstrate a value feedback
+	function valueOutput(element) {
+		var value = element.value;
+		var output = element.parentNode.getElementsByTagName('output')[0] || element.parentNode.parentNode.getElementsByTagName('output')[0];
+		output[textContent] = value;
+	}
+
+	$document.on('input', 'input[type="range"], ' + selector, function(e) {
+		valueOutput(e.target);
+	});
+
+	// Basic rangeslider initialization
+	$element.rangeslider({
+
+		// Deactivate the feature detection
+		polyfill: false,
+
+		// Callback function
+		onInit: function() {
+			valueOutput(this.$element[0]);
+		},
+
+
+		// Callback function
+		onSlideEnd: function(position, value) {
+			console.log('value: ' + value);
+			var req = {"SetPower": value};
+			vm.send(req);
+		}
+	});
 
 
 });
