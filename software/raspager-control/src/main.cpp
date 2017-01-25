@@ -215,19 +215,22 @@ int main(int argc, char** argv) {
 		double wsswr = myExtension.readSWR();
 		double wsvoltage = myExtension.readVoltage();
 		double wscurrent = myExtension.readCurrent();
+		double wsfwdpwrmean = myExtension.readMeanFwdPwr();
+		double wsrevpwrmean = myExtension.readMeanRevPwr();
+		double wsswrmean = myExtension.readMeanSWR();
 
 
 
 		
 		json_spirit::Object addr_obj;
-		addr_obj.push_back( json_spirit::Pair( "Voltage", round(wsvoltage * 100.0) / 100.0 ) );
-		addr_obj.push_back( json_spirit::Pair( "Current", round(wscurrent * 100.0) / 100.0 ) );
-		addr_obj.push_back( json_spirit::Pair( "PowerForward", 12.3 ) );
-		addr_obj.push_back( json_spirit::Pair( "PowerForwardLastTX", 10.3 ) );
-		addr_obj.push_back( json_spirit::Pair( "PowerReflect", 1.3 ) );
-		addr_obj.push_back( json_spirit::Pair( "PowerReflectLastTX", 2.0 ) );
-		addr_obj.push_back( json_spirit::Pair( "PowerVSWR", 1.3 ) );
-		addr_obj.push_back( json_spirit::Pair( "PowerVSWRLastTX", 1.4 ) );
+		addr_obj.push_back( json_spirit::Pair( "Voltage", round(wsvoltage * 10.0) / 100.0 ) );
+		addr_obj.push_back( json_spirit::Pair( "Current", round(wscurrent * 10.0) / 100.0 ) );
+		addr_obj.push_back( json_spirit::Pair( "PowerForward", round(wsfwdpwr * 10.0) / 10.0 ) );
+		addr_obj.push_back( json_spirit::Pair( "PowerForwardLastTX", round(wsfwdpwrmean * 10.0) / 10.0 ) );
+		addr_obj.push_back( json_spirit::Pair( "PowerReflect", round(wsrevpwr * 10.0) / 10.0 ) );
+		addr_obj.push_back( json_spirit::Pair( "PowerReflectLastTX", round(wsrevpwrmean * 10.0) / 10.0 ) );
+		addr_obj.push_back( json_spirit::Pair( "PowerVSWR", round(wsswr * 100.0) / 100.0 ) );
+		addr_obj.push_back( json_spirit::Pair( "PowerVSWRLastTX", round(wsswrmean * 100.0) / 100.0 ) );
 		addr_obj.push_back( json_spirit::Pair( "Slots", "1283ABC" ) );
 
 	
