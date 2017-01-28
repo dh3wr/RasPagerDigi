@@ -17,7 +17,11 @@ var vm = new Vue({
 		PowerReflectLastTX: 0.0,
 		PowerVSWR: 0.0,
 		PowerVSWRLastTX: 0.0,
-		Slots: ""
+		Slots: "",
+		INTemp: "",
+		OUTTemp: "",
+		APRSTemp: "",
+		PATemp: ""
     },
     methods: {
         connect: function(event) {
@@ -34,7 +38,7 @@ var vm = new Vue({
         },
         onmessage: function(event) {
             var response = JSON.parse(event.data) || {};
-			console.log(response);
+//			console.log(response);
             for (var key in response) {
                 var value = response[key];
                 switch (key) {
@@ -47,6 +51,10 @@ var vm = new Vue({
                     case "PowerVSWR": this.PowerVSWR = value; break;
                     case "PowerVSWRLastTX": this.PowerVSWRLastTX = value; break;
                     case "Slots": this.Slots = value; break;
+					case "INTemp" : this.INTemp = value; break;
+					case "OUTTemp" : this.OUTTemp = value; break;
+					case "APRSTemp" : this.APRSTemp = value; break;
+					case "PATemp" : this.PATemp = value; break;					
                     default: console.log("Unknown Key: ", key);
                 }
             }
@@ -55,15 +63,12 @@ var vm = new Vue({
 
 			if (chartVoltage) {
 				point = chartVoltage.series[0].points[0];
-
 				point.update(this.Voltage);
-				console.log(this.Voltage);
 			}
 
 			// Ampere
 			if (chartAmpere) {
 				point = chartAmpere.series[0].points[0];
-
 				point.update(this.Current);
 			}
 			
@@ -83,6 +88,23 @@ var vm = new Vue({
 				
 				chartPower.redraw();
 			}
+
+			// Temp Intern
+			if (chartIntTemp) { // the chart may be destroyed
+                var intemp = chartIntTemp.series[0].points[0],
+					outtemp = chartIntTemp.series[1].points[0],
+					aprstemp= chartIntTemp.series[2].points[0];
+					patemp= chartIntTemp.series[3].points[0];
+					
+
+				intemp.update(this.INTemp, false);
+				outtemp.update(this.OUTTemp, false);
+				aprstemp.update(this.APRSTemp, false);
+				patemp.update(this.PATemp, false);
+				
+				chartIntTemp.redraw();
+			}
+
         },
         onclose: function(event) {
             if (this.connected) {
@@ -118,6 +140,55 @@ var vm = new Vue({
 $(function () {
 
     var gaugeOptions = {
+
+        chart: {
+            type: 'solidgauge'
+        },
+
+        title: null,
+
+        pane: {
+            center: ['50%', '85%'],
+            size: '140%',
+            startAngle: -90,
+            endAngle: 90,
+            background: {
+                backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
+                innerRadius: '60%',
+                outerRadius: '100%',
+                shape: 'arc'
+            }
+        },
+
+        tooltip: {
+            enabled: false
+        },
+
+        // the value axis
+        yAxis: {
+            lineWidth: 0,
+            minorTickInterval: null,
+            tickAmount: 2,
+            title: {
+                y: -70
+            },
+            labels: {
+                y: 16
+            }
+        },
+
+        plotOptions: {
+            solidgauge: {
+                dataLabels: {
+                    y: 5,
+                    borderWidth: 0,
+                    useHTML: true
+                }
+            }
+        }
+    };
+	
+    var TempgaugeOptions = {
 
         chart: {
             type: 'solidgauge'
@@ -268,6 +339,219 @@ $(function () {
                 valueSuffix: ' A'
             }
         }]
+
+    }));
+	
+    // The Temp gauges
+    chartIntTemp = Highcharts.chart('container-TempIntern', Highcharts.merge(TempgaugeOptions, {
+        title: {
+            text: null // 'Temperatures'
+        },
+		pane: [{
+            startAngle: -45,
+            endAngle: 45,
+            background: null,
+            center: ['10%', '100%'],
+            size: 200
+        }, {
+            startAngle: -45,
+            endAngle: 45,
+            background: null,
+            center: ['34%', '100%'],
+            size: 200
+        }, {
+            startAngle: -45,
+            endAngle: 45,
+            background: null,
+            center: ['57%', '100%'],
+            size: 200
+        }, {
+            startAngle: -45,
+            endAngle: 45,
+            background: null,
+            center: ['80%', '100%'],
+            size: 200
+        }],
+		
+		yAxis: [{
+            min: -10,
+            max: 70,
+            title: {
+                text: 'Inlet'
+            },
+
+            pane: 0,
+
+            stops: [
+                [0.1, '#55BF3B'], // green
+                [0.7, '#DDDF0D'], // yellow
+                [0.8, '#DF5353'] // red
+            ],
+			plotBands: [{
+                from: -10,
+                to: 50,
+                color: '#00FF00',
+                innerRadius: '100%',
+                outerRadius: '103%'
+            }, {
+                from: 50,
+                to: 60,
+                color: '#FFFF00',
+                innerRadius: '100%',
+                outerRadius: '103%'
+			}, {
+                from: 60,
+                to: 70,
+                color: '#C02316',
+                innerRadius: '100%',
+                outerRadius: '103%'
+			}],
+        },{
+            min: -10,
+            max: 70,
+            title: {
+                text: 'Outlet'
+            },
+            pane: 1,
+
+            stops: [
+                [0.1, '#55BF3B'], // green
+                [0.7, '#DDDF0D'], // yellow
+                [0.8, '#DF5353'] // red
+            ],
+			plotBands: [{
+                from: -10,
+                to: 50,
+                color: '#00FF00',
+                innerRadius: '100%',
+                outerRadius: '103%'
+            }, {
+                from: 50,
+                to: 60,
+                color: '#FFFF00',
+                innerRadius: '100%',
+                outerRadius: '103%'
+			}, {
+                from: 60,
+                to: 70,
+                color: '#C02316',
+                innerRadius: '100%',
+                outerRadius: '103%'
+			}],
+        },{
+            min: -10,
+            max: 70,
+            title: {
+                text: 'APRS TX'
+            },
+            pane: 2,
+            stops: [
+                [0.1, '#55BF3B'], // green
+                [0.7, '#DDDF0D'], // yellow
+                [0.8, '#DF5353'] // red
+            ],
+			plotBands: [{
+                from: -10,
+                to: 50,
+                color: '#00FF00',
+                innerRadius: '100%',
+                outerRadius: '103%'
+            }, {
+                from: 50,
+                to: 60,
+                color: '#FFFF00',
+                innerRadius: '100%',
+                outerRadius: '103%'
+			}, {
+                from: 60,
+                to: 70,
+                color: '#C02316',
+                innerRadius: '100%',
+                outerRadius: '103%'
+			}],
+        },{
+            min: -10,
+            max: 70,
+            title: {
+                text: 'PA'
+            },
+            pane: 3,
+
+            stops: [
+                [0.1, '#55BF3B'], // green
+                [0.7, '#DDDF0D'], // yellow
+                [0.8, '#DF5353'] // red
+            ],
+			plotBands: [{
+                from: -10,
+                to: 50,
+                color: '#00FF00',
+                innerRadius: '100%',
+                outerRadius: '103%'
+            }, {
+                from: 50,
+                to: 60,
+                color: '#FFFF00',
+                innerRadius: '100%',
+                outerRadius: '103%'
+			}, {
+                from: 60,
+                to: 70,
+                color: '#C02316',
+                innerRadius: '100%',
+                outerRadius: '103%'
+			}],
+		}],
+
+        series: [{
+            name: 'TempInlet',
+            data: [1],
+            yAxis: 0,
+            dataLabels: {
+                format: '<div style="text-align:center"><span style="font-size:20px;color:' +
+                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y:.1f}</span><br/>' +
+                       '<span style="font-size:12px;color:silver">°C</span></div>'
+            },
+            tooltip: {
+                valueSuffix: ' C'
+            }
+        }, {
+            name: 'TempOutlet',
+            data: [1],
+            yAxis: 1,
+            dataLabels: {
+                format: '<div style="text-align:center"><span style="font-size:20px;color:' +
+                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y:.1f}</span><br/>' +
+                       '<span style="font-size:12px;color:silver">°C</span></div>'
+            },
+            tooltip: {
+                valueSuffix: ' C'
+            }
+        }, {
+            name: 'TempAPRS',
+            data: [1],
+            yAxis: 2,
+            dataLabels: {
+                format: '<div style="text-align:center"><span style="font-size:20px;color:' +
+                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y:.1f}</span><br/>' +
+                       '<span style="font-size:12px;color:silver">°C</span></div>'
+            },
+            tooltip: {
+                valueSuffix: ' C'
+            }
+        }, {
+            name: 'TempPAlet',
+            data: [1],
+            yAxis: 3,
+            dataLabels: {
+                format: '<div style="text-align:center"><span style="font-size:20px;color:' +
+                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y:.1f}</span><br/>' +
+                       '<span style="font-size:12px;color:silver">°C</span></div>'
+            },
+            tooltip: {
+                valueSuffix: ' C'
+            }
+		}]
 
     }));
 	

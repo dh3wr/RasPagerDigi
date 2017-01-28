@@ -138,7 +138,7 @@ button.red:active { background-color: ##B71C1C; }
     border-top-right-radius: 2px;
 }
 
-.box-header h3 {
+.box-header h3, .box-header h4{
     font-size: 1.05rem;
     font-weight: 400;
     line-height: normal;
