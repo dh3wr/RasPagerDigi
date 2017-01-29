@@ -1,6 +1,9 @@
 var chartVoltage;
 var chartAmpere;
 var chartPower;
+var chartIntTemp;
+var chartExtTemp;
+
 
 var vm = new Vue({
     el: "#wrapper",
@@ -21,7 +24,11 @@ var vm = new Vue({
 		INTemp: "",
 		OUTTemp: "",
 		APRSTemp: "",
-		PATemp: ""
+		PATemp: "",
+		ExtTemp1: "",
+		ExtTemp2: "",
+		ExtTemp3: "",
+		ExtTemp4: ""
     },
     methods: {
         connect: function(event) {
@@ -38,7 +45,7 @@ var vm = new Vue({
         },
         onmessage: function(event) {
             var response = JSON.parse(event.data) || {};
-//			console.log(response);
+//		console.log(response);
             for (var key in response) {
                 var value = response[key];
                 switch (key) {
@@ -54,7 +61,11 @@ var vm = new Vue({
 					case "INTemp" : this.INTemp = value; break;
 					case "OUTTemp" : this.OUTTemp = value; break;
 					case "APRSTemp" : this.APRSTemp = value; break;
-					case "PATemp" : this.PATemp = value; break;					
+					case "PATemp" : this.PATemp = value; break;
+					case "ExtTemp1" : this.ExtTemp1 = value; break;
+					case "ExtTemp2" : this.ExtTemp2 = value; break;
+					case "ExtTemp3" : this.ExtTemp3 = value; break;
+					case "ExtTemp4" : this.ExtTemp4 = value; break;
                     default: console.log("Unknown Key: ", key);
                 }
             }
@@ -105,6 +116,23 @@ var vm = new Vue({
 				chartIntTemp.redraw();
 			}
 
+			// Temp Extern
+			if (chartExtTemp) { // the chart may be destroyed
+               				var Exttemp1 = chartExtTemp.series[0].points[0],
+					Exttemp2 = chartExtTemp.series[1].points[0],
+					Exttemp3 = chartExtTemp.series[2].points[0];
+					Exttemp4 = chartExtTemp.series[3].points[0];
+					
+
+				Exttemp1.update(this.ExtTemp1, false);
+				Exttemp2.update(this.ExtTemp2, false);
+				Exttemp3.update(this.ExtTemp3, false);
+				Exttemp4.update(this.ExtTemp4, false);
+				
+				chartExtTemp.redraw();
+			}
+
+			
         },
         onclose: function(event) {
             if (this.connected) {
@@ -194,40 +222,13 @@ $(function () {
             type: 'solidgauge'
         },
 
-        title: null,
-
-        pane: {
-            center: ['50%', '85%'],
-            size: '140%',
-            startAngle: -90,
-            endAngle: 90,
-            background: {
-                backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
-                innerRadius: '60%',
-                outerRadius: '100%',
-                shape: 'arc'
-            }
-        },
-
         tooltip: {
             enabled: false
         },
 
-        // the value axis
-        yAxis: {
-            lineWidth: 0,
-            minorTickInterval: null,
-            tickAmount: 2,
-            title: {
-                y: -70
-            },
-            labels: {
-                y: 16
-            }
-        },
-
         plotOptions: {
             solidgauge: {
+				innerRadius: '75%',
                 dataLabels: {
                     y: 5,
                     borderWidth: 0,
@@ -342,7 +343,7 @@ $(function () {
 
     }));
 	
-    // The Temp gauges
+    // The Intern Temp gauges
     chartIntTemp = Highcharts.chart('container-TempIntern', Highcharts.merge(TempgaugeOptions, {
         title: {
             text: null // 'Temperatures'
@@ -379,7 +380,14 @@ $(function () {
             title: {
                 text: 'Inlet'
             },
-
+            minorTickPosition: 'outside',
+            tickPosition: 'outside',
+			tickInterval: 20,
+			minorTickInterval: 10,
+            labels: {
+                distance: 20
+            },
+			
             pane: 0,
 
             stops: [
@@ -413,6 +421,13 @@ $(function () {
                 text: 'Outlet'
             },
             pane: 1,
+            minorTickPosition: 'outside',
+            tickPosition: 'outside',
+			tickInterval: 20,
+			minorTickInterval: 10,
+            labels: {
+                distance: 20
+            },
 
             stops: [
                 [0.1, '#55BF3B'], // green
@@ -445,6 +460,14 @@ $(function () {
                 text: 'APRS TX'
             },
             pane: 2,
+            minorTickPosition: 'outside',
+            tickPosition: 'outside',
+			tickInterval: 20,
+			minorTickInterval: 10,
+            labels: {
+                distance: 20
+            },
+
             stops: [
                 [0.1, '#55BF3B'], // green
                 [0.7, '#DDDF0D'], // yellow
@@ -476,6 +499,255 @@ $(function () {
                 text: 'PA'
             },
             pane: 3,
+            minorTickPosition: 'outside',
+            tickPosition: 'outside',
+			tickInterval: 20,
+			minorTickInterval: 10,
+            labels: {
+                distance: 20
+            },
+
+            stops: [
+                [0.1, '#55BF3B'], // green
+                [0.7, '#DDDF0D'], // yellow
+                [0.8, '#DF5353'] // red
+            ],
+			plotBands: [{
+                from: -10,
+                to: 50,
+                color: '#00FF00',
+                innerRadius: '100%',
+                outerRadius: '103%'
+            }, {
+                from: 50,
+                to: 60,
+                color: '#FFFF00',
+                innerRadius: '100%',
+                outerRadius: '103%'
+			}, {
+                from: 60,
+                to: 70,
+                color: '#C02316',
+                innerRadius: '100%',
+                outerRadius: '103%'
+			}],
+		}],
+
+        series: [{
+            name: 'TempInlet',
+            data: [1],
+            yAxis: 0,
+            dataLabels: {
+                format: '<div style="text-align:center"><span style="font-size:20px;color:' +
+                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y:.1f}</span><br/>' +
+                       '<span style="font-size:12px;color:silver">°C</span></div>'
+            },
+            tooltip: {
+                valueSuffix: ' C'
+            }
+        }, {
+            name: 'TempOutlet',
+            data: [1],
+            yAxis: 1,
+            dataLabels: {
+                format: '<div style="text-align:center"><span style="font-size:20px;color:' +
+                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y:.1f}</span><br/>' +
+                       '<span style="font-size:12px;color:silver">°C</span></div>'
+            },
+            tooltip: {
+                valueSuffix: ' C'
+            }
+        }, {
+            name: 'TempAPRS',
+            data: [1],
+            yAxis: 2,
+            dataLabels: {
+                format: '<div style="text-align:center"><span style="font-size:20px;color:' +
+                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y:.1f}</span><br/>' +
+                       '<span style="font-size:12px;color:silver">°C</span></div>'
+            },
+            tooltip: {
+                valueSuffix: ' C'
+            }
+        }, {
+            name: 'TempPAlet',
+            data: [1],
+            yAxis: 3,
+            dataLabels: {
+                format: '<div style="text-align:center"><span style="font-size:20px;color:' +
+                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y:.1f}</span><br/>' +
+                       '<span style="font-size:12px;color:silver">°C</span></div>'
+            },
+            tooltip: {
+                valueSuffix: ' C'
+            }
+		}]
+
+    }));
+
+    // The Extern Temp gauges
+    chartExtTemp = Highcharts.chart('container-TempExtern', Highcharts.merge(TempgaugeOptions, {
+        title: {
+            text: null // 'Temperatures'
+        },
+		pane: [{
+            startAngle: -45,
+            endAngle: 45,
+            background: null,
+            center: ['10%', '100%'],
+            size: 200
+        }, {
+            startAngle: -45,
+            endAngle: 45,
+            background: null,
+            center: ['34%', '100%'],
+            size: 200
+        }, {
+            startAngle: -45,
+            endAngle: 45,
+            background: null,
+            center: ['57%', '100%'],
+            size: 200
+        }, {
+            startAngle: -45,
+            endAngle: 45,
+            background: null,
+            center: ['80%', '100%'],
+            size: 200
+        }],
+		
+		yAxis: [{
+            min: -10,
+            max: 70,
+            title: {
+                text: 'Extern 1'
+            },
+            minorTickPosition: 'outside',
+            tickPosition: 'outside',
+			tickInterval: 20,
+			minorTickInterval: 10,
+            labels: {
+                distance: 20
+            },
+			
+            pane: 0,
+
+            stops: [
+                [0.1, '#55BF3B'], // green
+                [0.7, '#DDDF0D'], // yellow
+                [0.8, '#DF5353'] // red
+            ],
+			plotBands: [{
+                from: -10,
+                to: 50,
+                color: '#00FF00',
+                innerRadius: '100%',
+                outerRadius: '103%'
+            }, {
+                from: 50,
+                to: 60,
+                color: '#FFFF00',
+                innerRadius: '100%',
+                outerRadius: '103%'
+			}, {
+                from: 60,
+                to: 70,
+                color: '#C02316',
+                innerRadius: '100%',
+                outerRadius: '103%'
+			}],
+        },{
+            min: -10,
+            max: 70,
+            title: {
+                text: 'Extern 2'
+            },
+            pane: 1,
+            minorTickPosition: 'outside',
+            tickPosition: 'outside',
+			tickInterval: 20,
+			minorTickInterval: 10,
+            labels: {
+                distance: 20
+            },
+
+            stops: [
+                [0.1, '#55BF3B'], // green
+                [0.7, '#DDDF0D'], // yellow
+                [0.8, '#DF5353'] // red
+            ],
+			plotBands: [{
+                from: -10,
+                to: 50,
+                color: '#00FF00',
+                innerRadius: '100%',
+                outerRadius: '103%'
+            }, {
+                from: 50,
+                to: 60,
+                color: '#FFFF00',
+                innerRadius: '100%',
+                outerRadius: '103%'
+			}, {
+                from: 60,
+                to: 70,
+                color: '#C02316',
+                innerRadius: '100%',
+                outerRadius: '103%'
+			}],
+        },{
+            min: -10,
+            max: 70,
+            title: {
+                text: 'Extern 3'
+            },
+            pane: 2,
+            minorTickPosition: 'outside',
+            tickPosition: 'outside',
+			tickInterval: 20,
+			minorTickInterval: 10,
+            labels: {
+                distance: 20
+            },
+
+            stops: [
+                [0.1, '#55BF3B'], // green
+                [0.7, '#DDDF0D'], // yellow
+                [0.8, '#DF5353'] // red
+            ],
+			plotBands: [{
+                from: -10,
+                to: 50,
+                color: '#00FF00',
+                innerRadius: '100%',
+                outerRadius: '103%'
+            }, {
+                from: 50,
+                to: 60,
+                color: '#FFFF00',
+                innerRadius: '100%',
+                outerRadius: '103%'
+			}, {
+                from: 60,
+                to: 70,
+                color: '#C02316',
+                innerRadius: '100%',
+                outerRadius: '103%'
+			}],
+        },{
+            min: -10,
+            max: 70,
+            title: {
+                text: 'Extern 4'
+            },
+            pane: 3,
+            minorTickPosition: 'outside',
+            tickPosition: 'outside',
+			tickInterval: 20,
+			minorTickInterval: 10,
+            labels: {
+                distance: 20
+            },
 
             stops: [
                 [0.1, '#55BF3B'], // green
@@ -607,6 +879,9 @@ $(function () {
             max: 40,
             minorTickPosition: 'outside',
             tickPosition: 'outside',
+			tickInterval: 10,
+			minorTickInterval: 5,
+
             labels: {
                 rotation: 'auto',
                 distance: 20
@@ -640,6 +915,10 @@ $(function () {
             max: 40,
             minorTickPosition: 'outside',
             tickPosition: 'outside',
+			tickInterval: 10,
+			minorTickInterval: 5,
+
+
             labels: {
                 rotation: 'auto',
                 distance: 20
@@ -673,6 +952,10 @@ $(function () {
             max: 3,
             minorTickPosition: 'outside',
             tickPosition: 'outside',
+			tickInterval: 0.5,
+			minorTickInterval: 0.1,
+			
+
             labels: {
                 rotation: 'auto',
                 distance: 20
