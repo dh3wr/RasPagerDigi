@@ -74,6 +74,7 @@ int MenuIpEingabe::getIP(int oktetNumber) {
         return (myNumberHandler[oktetNumber]->getNumber());
     } else {
         cout << "IP-Eingabe: Fehler, Oktetnummer " << oktetNumber << "existiert nicht!\n";
+		return 0;
     }
 }
 

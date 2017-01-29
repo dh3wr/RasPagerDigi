@@ -1,25 +1,33 @@
 #pragma once
 
-#include <stdio.h>
-#include <string.h>
+/* #include <stdio.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
 
 #include <cstdlib>
-#include <fstream>
-#include <iostream>
 #include <sstream>
+ */
+#include <iostream>
+#include <fstream>
 #include <string>
+#include <regex>
+
 
 using namespace std;
 
 class OneWire {
-#define	OUT	"10.9855C3000800"
-#define IN	"10.246C89020800"
-#define APRS	"10.119EB5020800"
-#define PA	"10.0345B5020800"
+
+#define	OUT		"10-000800c35598"
+#define IN		"10-000802896c24"
+#define APRS	"10-000802b59e11"
+#define PA		"10-000802b54503"
+
+#define TEMPEXT4	"10-000803164aa0"
+#define TEMPEXT3	"10-000803160c3f"
+#define TEMPEXT2	"10-000803168a4a"
+#define TEMPEXT1	"10-000803162821"
 
 public:
     OneWire();
