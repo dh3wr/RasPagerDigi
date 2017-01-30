@@ -28,9 +28,11 @@ private:
 
 	WsServer server;
 	wsdata mywsdata;
+	RaspagerDigiExtension* myExtension;
+	
 	
 public:
-	WebSocketServer();
+	WebSocketServer(RaspagerDigiExtension* myExtension);
 	~WebSocketServer();
 	bool SendData(wsdata wsdataToSsend);
 };

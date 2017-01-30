@@ -1,6 +1,6 @@
 #include "WebSocketServer.h"
 
-WebSocketServer::WebSocketServer() {
+WebSocketServer::WebSocketServer(RaspagerDigiExtension* myExtension) {
 	this->mywsdata.fwdpwr = 0.0;
 	this->mywsdata.revpwr = 0.0;
 	this->mywsdata.swr = 0.0;
@@ -9,15 +9,19 @@ WebSocketServer::WebSocketServer() {
 	this->mywsdata.fwdpwrmean = 0.0;
 	this->mywsdata.revpwrmean = 0.0;
 	this->mywsdata.swrmean = 0.0;
-
+	this->myExtension = myExtension;
 
 
 	// From define
     this->server.config.port = WSServerPort;
 
     auto& echo_all = this->server.endpoint["^/echo_all/?$"];
-    echo_all.on_message=[&this.server](shared_ptr<WsServer::Connection> /*connection*/, shared_ptr<WsServer::Message> message) {
-        auto message_str=message->string();
+    echo_all.on_message=[](shared_ptr<WsServer::Connection> /*connection*/, shared_ptr<WsServer::Message> message) {
+
+	// Vielleicht kann man das auch in eine eigene funktion auslagern? Damit das nicht
+	// Alles im Constructor steht?
+
+	auto message_str=message->string();
         
         //echo_all.get_connections() can also be used to solely receive connections on this endpoint
         for(auto a_connection: this->server.get_connections()) {
