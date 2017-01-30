@@ -29,7 +29,7 @@ void InfoNetwork::printMenu(bool resetCursor, int myStage) {
             string sn = myNetworkControl.readCurrentSubnet();
 
             string empty = "";
-            for (int i = 0; i < sn.length(); i++) {
+            for (std::size_t i = 0; i < sn.length(); i++) {
                 empty = empty + " ";
             }
 

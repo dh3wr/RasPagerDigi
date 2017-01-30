@@ -173,29 +173,35 @@ double RaspagerDigiExtension::readInternalCurrent() {
 double RaspagerDigiExtension::readInternalFwdPwr() {
     double res;
     res = ((double)readFwdPwrRaw() / 4096 * 5);
-    if (res < 0.35) {
-	return 0.0;
-    } else if (res > 2.5) {
-	return 999;
+    if (res > 2.5) {
+		return 999;
     } else {
-	double inputPwrMeter = 24.19354839 * (res - 0.5) + (-25);
-	double PwrFwr = pow(10, ((inputPwrMeter + 30) / 10)) / 1000;
-	return PwrFwr;
-    }
+		double inputPwrMeter = 24.19354839 * (res - 0.5) + (-25);
+		double PwrFwr = pow(10, ((inputPwrMeter + 30) / 10)) / 1000;
+		PwrFwr = (-0.0027 * pow(PwrFwr, 2)) + (0.7072 * PwrFwr) - 0.0907;
+		if (PwrFwr < 0.0) {
+			return 0.0;
+		} else {
+			return PwrFwr;
+		}
+	}
 }
 
 double RaspagerDigiExtension::readInternalRevPwr(){
     double res;
     res = ((double)readRevPwrRaw() / 4096 * 5);
-    if (res < 0.35) {
-	return 0.0;
-    } else if (res > 2.5) {
-	return 999;
+    if (res > 2.5) {
+		return 999;
     } else {
-	double inputPwrMeter = 24.19354839 * (res - 0.5) + (-25);
-	double PwrRev = pow(10, ((inputPwrMeter + 30) / 10)) / 1000;
-	return PwrRev;
-    }
+		double inputPwrMeter = 24.19354839 * (res - 0.5) + (-25);
+		double PwrRev = pow(10, ((inputPwrMeter + 30) / 10)) / 1000;
+		PwrRev = (-0.0027 * pow(PwrRev, 2)) + (0.7072 * PwrRev) - 0.0907;
+		if (PwrRev < 0.0) {
+			return 0.0;
+		} else {
+			return PwrRev;
+		}
+	}
 }
 
 double RaspagerDigiExtension::readInternalSWR(){
