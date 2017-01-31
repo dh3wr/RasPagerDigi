@@ -1,146 +1,127 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>RasPagerDigi DB0EIF</title>
-    <link type="text/css" rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="lib/rangeslider/rangeslider.css">	
-    <script src="lib/vue.js"></script>
-	<style type="text/css">
-		.highcharts-yaxis-grid .highcharts-grid-line {
-			display: none;
-		}
-	</style>
-    <style>
+<head>
+  <meta charset="utf-8">
+  <title>RasPagerDigi DB0EIF</title>
+  <link type="text/css" rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="lib/rangeslider/rangeslider.css">
+  <script src="lib/vue.js"></script>
+  <style type="text/css">
+    .highcharts-yaxis-grid .highcharts-grid-line {
+         display: none;
+    }
+    output {
+        display: block;
+        font-size: 25px;
+        font-weight: bold;
+        text-align: center;
+        margin: 30px 0;
+        width: 100px;
+    }
 
+    .u-left {
+        float: left;
+    }
 
-        output {
-            display: block;
-            font-size: 25px;
-            font-weight: bold;
-            text-align: center;
-            margin: 30px 0;
-            width: 100px;
-        }
+    .u-cf:before,
+    .u-cf:after {
+        content: "";
+        display: table;
+    }
+    .u-cf:after {
+        clear: both;
+    }
 
-        .u-left {
-            float: left;
-        }
-
-        .u-cf:before,
-        .u-cf:after {
-            content: "";
-            display: table;
-        }
-        .u-cf:after {
-            clear: both;
-        }
-
-        .u-text-left {
-            text-align: left;
-        }
-    </style>
-    <!--[if lt IE 9]>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
-    <![endif]-->
-
+    .u-text-left {
+        text-align: left;
+    }
+  </style>
+  <!--[if lt IE 9]>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+   <![endif]-->
 </head>
-
 <body>
-	<div id="wrapper">
-		<div id="boxes">
-			<div class="box">
-				<div class="box-header" style="width: 870px; height: 15px; float: left">
-					<h3>POCSAG PA Health</h3>
-				</div>
-				<div class="box-content">	
-					<div class="box" style="width: 900px; float: left">
-						<div class="box-header">
-							<h4>Supply</h4>
-						</div>
-						<div class="box-content">	
-							<div class="box">
-								<div id="container-voltage" style="width: 300px; height: 200px; float: left"></div>
-								<div id="container-ampere" style="width: 300px; height: 200px; float: left"></div>
-							</div>
-						</div>
-					</div>
-					<div class="box" style="width: 900px; height: 300px; float: left">
-						<div class="box-header">
-							<h4>Power</h4>
-						</div>
-
-						<div class="box-content">	
-							<div class="box">
-								<div id="container-power" style="width: 860px; float: left"></div>
-							</div>
-						</div>
-					</div>
-					<div class="box" style="width: 900px; height: 100px; float: left">
-						<div class="box-header">
-							<h4>Power setting</h4>
-						</div>
-
-						<div class="box-content">	
-							<div class="box">
-								<div>
-									<input type="range" min="4" max="5" step="0.05" value="10" data-rangeslider>
-									<output></output>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="box">
-				<div class="box-header" style="width: 870px; height: 15px; float: left">
-					<h3>Internal Temperature</h3>
-				</div>
-				<div class="box-content">	
-					<div class="box">
-						<div id="container-TempIntern" style="width: 900px; height: 200px; float: left"></div>
-					</div>
-				</div>
-			</div>
-			<div class="box">
-				<div class="box-header" style="width: 870px; height: 15px; float: left">
-					<h3>External Temperature</h3>
-				</div>
-				<div class="box-content">	
-					<div class="box">
-						<div id="container-TempExtern" style="width: 900px; height: 200px; float: left"></div>
-					</div>
-				</div>
-			</div>
-
-		</div>
-	</div>
-	<footer>
-		<div class="logo">
-			<a href="http://www.afu.rwth-aachen.de"><img src="logo.png" alt="Logo"></a>
-		</div>
-		<div>
-<!--			<p>
-				<b>RasPagerDigi {{version}}</b>
-			</p>
--->
-			<p>
-				&copy; 2017 Ralf Wilke und RWTH Amateurfunkgruppe
-			</p>
-			<p>
-				<a href="https://github.com/dh3wr/RasPagerDigi">GitHub</a>
-				&bull; <a href="https://github.com/dh3wr/RasPagerDigi/issues">Report Issues</a>
-				&bull; <a href="https://www.afu.rwth-aachen.de/ueber-uns/spendenaufruf">Donate</a>
-			</p>
-		</div>
-	  </footer>
-	</div>
-  </body>
-	
-	<script type="text/javascript" src="lib/jquery.min.js"></script>
-	<script src="lib/highcharts/highcharts.js"></script>
-	<script src="lib/highcharts/highcharts-more.js"></script>
-	<script src="lib/highcharts/modules/solid-gauge.js"></script>
-	<script src="lib/rangeslider/rangeslider.js"></script>
-    <script src="./main.js"></script>
+  <div id="wrapper">
+    <div class="boxes">
+      <div class="box">
+        <div class="box-header">
+          <h3>POCSAG PA Health</h3>
+        </div>
+        <div class="box-content">
+          <div class="boxes">
+            <div class="box">
+              <div class="box-header">
+                <h4>Supply</h4>
+              </div>
+              <div class="box-content">
+                <div id="container-voltage"></div>
+                <div id="container-ampere"></div>
+              </div>
+            </div>
+            <div class="box">
+              <div class="box-header">
+                <h4>Power</h4>
+              </div>
+              <div class="box-content">
+                <div id="container-power"></div>
+              </div>
+            </div>
+            <div class="box">
+              <div class="box-header">
+                <h4>Power setting</h4>
+              </div>
+              <div class="box-content">
+                <div>
+                  <input type="range" min="4" max="5" step="0.05"
+                         value="10" data-rangeslider="">
+                  <output></output>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="box-header">
+          <h3>Internal Temperature</h3>
+        </div>
+        <div class="box-content">
+          <div id="container-TempIntern"></div>
+        </div>
+      </div>
+      <div class="box">
+        <div class="box-header">
+          <h3>External Temperature</h3>
+        </div>
+        <div class="box-content">
+          <div id="container-TempExtern"></div>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <div class="logo">
+        <a href="http://www.afu.rwth-aachen.de"><img src="logo.png"
+        alt="Logo"></a>
+      </div>
+      <div>
+        <!--
+        <p>
+           <b>RasPagerDigi {{version}}</b>
+        </p>
+        -->
+        <p>© 2017 Ralf Wilke und RWTH Amateurfunkgruppe</p>
+        <p>
+            <a href="https://github.com/dh3wr/RasPagerDigi">GitHub</a> •
+            <a href="https://github.com/dh3wr/RasPagerDigi/issues">Report Issues</a> •
+            <a href="https://www.afu.rwth-aachen.de/ueber-uns/spendenaufruf">Donate</a></p>
+      </div>
+    </footer>
+  </div>
+  <script type="text/javascript" src="lib/jquery.min.js"></script>
+  <script src="lib/highcharts/highcharts.js"></script>
+  <script src="lib/highcharts/highcharts-more.js"></script>
+  <script src="lib/highcharts/modules/solid-gauge.js"></script>
+  <script src="lib/rangeslider/rangeslider.js"></script>
+  <script src="./main.js"></script>
+</body>
 </html>
