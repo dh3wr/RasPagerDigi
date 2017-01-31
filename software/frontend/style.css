@@ -115,13 +115,17 @@ button.red { background-color: #F44336; }
 button.red:hover { background-color: #D32F2F; }
 button.red:active { background-color: ##B71C1C; }
 
-#boxes {
+.boxes {
     display: flex;
     margin: 1rem 0;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: flex-start;
     align-items: flex-start;
+}
+
+.boxes .boxes {
+    margin: 0;
 }
 
 .box {
@@ -138,7 +142,7 @@ button.red:active { background-color: ##B71C1C; }
     border-top-right-radius: 2px;
 }
 
-.box-header h3, .box-header h4{
+.box-header h3, .box-header h4 {
     font-size: 1.05rem;
     font-weight: 400;
     line-height: normal;
@@ -148,6 +152,21 @@ button.red:active { background-color: ##B71C1C; }
 
 .box-content {
     padding: 15px;
+}
+
+#container-voltage, #container-ampere {
+    width: 300px;
+    height: 200px;
+}
+
+#container-TempIntern, #container-TempExtern {
+    width: 750px;
+    height: 150px;
+}
+
+#container-power {
+    width: 800px;
+    height: 150px;
 }
 
 #log {
