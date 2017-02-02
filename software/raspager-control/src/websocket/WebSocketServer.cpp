@@ -1,5 +1,5 @@
 #include "WebSocketServer.h"
-#include "../tools/raspagerdigiextension.h"
+#include "raspagerdigiextension.h"
 #include <functional>
 
 using namespace std;
@@ -34,7 +34,7 @@ void WebSocketServer::run() {
 bool WebSocketServer::SendData(const wsdata& data) {
 	json_spirit::Object addr_obj;
 	addr_obj.push_back( json_spirit::Pair( "Voltage", round(data.voltage * 10.0) / 10.0 ) );
-	addr_obj.push_back( json_spirit::Pair( "Current", round(mywsdata.current * 10.0) / 10.0 ) );
+	addr_obj.push_back( json_spirit::Pair( "Current", round(data.current * 10.0) / 10.0 ) );
 	addr_obj.push_back( json_spirit::Pair( "PowerForward", round(data.fwdpwr * 10.0) / 10.0 ) );
 	addr_obj.push_back( json_spirit::Pair( "PowerForwardLastTX", round(data.fwdpwrmean * 10.0) / 10.0 ) );
 	addr_obj.push_back( json_spirit::Pair( "PowerReflect", round(data.revpwr * 10.0) / 10.0 ) );
@@ -108,5 +108,5 @@ void WebSocketServer::OnMessage(shared_ptr<WsServer::Connection> connection,
 
 	cout << "Power set to: " << SetPowerReal << endl;
 
-	myExtension->setOutputPower_Watt(SetPowerReal);
+	myExtension.setOutputPower_Watt(SetPowerReal);
 }
