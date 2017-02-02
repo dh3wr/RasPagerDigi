@@ -5,13 +5,13 @@
 using namespace std;
 
 WebSocketServer::WebSocketServer(RaspagerDigiExtension& myExtension) :
-	myExtension(myExtenion)
+	myExtension(myExtension)
 {
 	// From define
     this->server.config.port = WSServerPort;
 
     auto& echo_all = this->server.endpoint["^/echo_all/?$"];
-    echo_all.on_message = std::bind(&WebSocketServer::OnMessage, this, _1, _2);
+    echo_all.on_message = std::bind(&WebSocketServer::OnMessage, this, placeholders::_1, placeholders::_2);
 }
 
 WebSocketServer::~WebSocketServer() {
