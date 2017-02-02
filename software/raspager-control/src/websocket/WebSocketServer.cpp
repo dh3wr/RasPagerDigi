@@ -10,7 +10,7 @@ WebSocketServer::WebSocketServer(RaspagerDigiExtension& myExtension) :
     this->server.config.port = WSServerPort;
 
     auto& echo_all = this->server.endpoint["^/echo_all/?$"];
-    echo_all.on_message = std::bind(WebSocketServer::OnMessage, this, _1, _2);
+    echo_all.on_message = std::bind(&WebSocketServer::OnMessage, this, _1, _2);
 }
 
 WebSocketServer::~WebSocketServer() {

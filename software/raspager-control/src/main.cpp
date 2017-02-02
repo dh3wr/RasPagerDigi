@@ -70,7 +70,7 @@ int main(int argc, char** argv) {
 // WEBSOCKETSERVER
 	WebSocketServer wsv(myExtension);
 
-    thread server_thread(std::bind(WebSocketServer::run, &wsv));
+    thread server_thread(std::bind(&WebSocketServer::run, &wsv));
     //Wait for server to start so that the client can connect
     this_thread::sleep_for(chrono::seconds(1));
 // END WEBSOCKETSERVER
@@ -236,7 +236,7 @@ int main(int argc, char** argv) {
 			temp.ExtTemp3 = myOneWire.readTemp(TEMPEXT3);
 			temp.ExtTemp4 = myOneWire.readTemp(TEMPEXT4);
 
-		wsd.SendTemp(temp);
+		wsv.SendTemp(temp);
 
 // END WEBSOCKETSERVER
 
