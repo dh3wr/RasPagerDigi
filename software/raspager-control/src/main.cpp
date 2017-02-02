@@ -10,7 +10,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <iomanip>  // ::std::setw 
+#include <iomanip>  // ::std::setw
 #include <ios>      // ::std::fixed
 
 #include "menus/info/hardware.h"
@@ -70,53 +70,16 @@ int main(int argc, char** argv) {
     master = "DB0ABC";
 	static RaspagerDigiExtension myExtension(skipDisplaySetup);
     static OneWire myOneWire;
-	
+
 // WEBSOCKETSERVER
-    //WebSocket (WS)-server at port 8080 using 1 thread
-    WsServer server;
-    server.config.port=8080;
+	WebSocketServer wsv(myExtension);
 
-    //Example 3: Echo to all WebSocket endpoints
-    //  Sending received messages to all connected clients
-    //  Test with the following JavaScript on more than one browser windows:
-    //    var ws=new WebSocket("ws://localhost:8080/echo_all");
-    //    ws.onmessage=function(evt){console.log(evt.data);};
-    //    ws.send("test");
-    auto& echo_all=server.endpoint["^/echo_all/?$"];
-//    echo_all.on_message=[&server, &myExtension](shared_ptr<WsServer::Connection> /*connection*/, shared_ptr<WsServer::Message> message) {
-    echo_all.on_message=[&](shared_ptr<WsServer::Connection> /*connection*/, shared_ptr<WsServer::Message> message) {
-        auto message_str=message->string();
-//		cout << message_str;
-		
-		double SetPowerReal = 0.0;
-		json_spirit::Value val;
-		
-		auto success = json_spirit::read(message_str, val);
-		if (success) {
-			auto jsonObject = val.get_obj();
-
-			for (auto entry : jsonObject) {
-				if (entry.name_ == "SetPower" && entry.value_.type() == json_spirit::Value_type::real_type) {
-					SetPowerReal = entry.value_.get_real();
-					break;
-				}
-			}
-		}
-		cout << "Power set to: " << SetPowerReal << endl;
-				
-		myExtension.setOutputPower_Watt(SetPowerReal);
-    };
-    
-    thread server_thread([&server](){
-        //Start WS-server
-        server.start();
-    });
-    
+    thread server_thread(std::bind(WebSocketServer::run, &wsv));
     //Wait for server to start so that the client can connect
     this_thread::sleep_for(chrono::seconds(1));
 // END WEBSOCKETSERVER
-	
-	
+
+
     // Hauptmenü
     cout << "Bereite Menus vor..." << std::endl;
     MenuItemOkBack myMainMenu("Hauptmenu", &myExtension);
@@ -167,11 +130,11 @@ int main(int argc, char** argv) {
     myScreensaverMenu.addSubmenuItem(&myInfoNetwork);
     myScreensaverMenu.addSubmenuItem(&myInfoNtp);
     myScreensaverMenu.addSubmenuItem(&myInfoHardware);
-	
+
 	// Testing of LEDs
     myExtension.setPTTLED(true);
     myExtension.setMasterConnectedLED(true);
-    
+
 	cout << "Screensaver bereit!" << std::endl;
 
 
@@ -190,7 +153,7 @@ int main(int argc, char** argv) {
 		double revpwr = myExtension.readRevPwr();
 		double voltage = myExtension.readVoltage();
 		double current = myExtension.readCurrent();
-		::std::cout << ::std::fixed 
+		::std::cout << ::std::fixed
 		<< ::std::setw( 12 ) << voltage << " V  "
 		<< ::std::setw( 12 ) << current << " A  "
 		<< ::std::setw( 12 ) << fwdpwr << " Fwd W  "
@@ -218,53 +181,36 @@ int main(int argc, char** argv) {
 
 		myExtension.MakeMeasurementCyclic();
 
-// WEBSOCKETSERVER		
+// WEBSOCKETSERVER
 		// Read ADC Values
-		double wsfwdpwr = myExtension.readFwdPwr();
-		double wsrevpwr = myExtension.readRevPwr();
-		double wsswr = myExtension.readSWR();
-		double wsvoltage = myExtension.readVoltage();
-		double wscurrent = myExtension.readCurrent();
-		double wsfwdpwrmean = myExtension.readMeanFwdPwr();
-		double wsrevpwrmean = myExtension.readMeanRevPwr();
-		double wsswrmean = myExtension.readMeanSWR();
-		
-		json_spirit::Object addr_obj;
-		addr_obj.push_back( json_spirit::Pair( "Voltage", round(wsvoltage * 10.0) / 10.0 ) );
-		addr_obj.push_back( json_spirit::Pair( "Current", round(wscurrent * 10.0) / 10.0 ) );
-		addr_obj.push_back( json_spirit::Pair( "PowerForward", round(wsfwdpwr * 10.0) / 10.0 ) );
-		addr_obj.push_back( json_spirit::Pair( "PowerForwardLastTX", round(wsfwdpwrmean * 10.0) / 10.0 ) );
-		addr_obj.push_back( json_spirit::Pair( "PowerReflect", round(wsrevpwr * 10.0) / 10.0 ) );
-		addr_obj.push_back( json_spirit::Pair( "PowerReflectLastTX", round(wsrevpwrmean * 10.0) / 10.0 ) );
-		addr_obj.push_back( json_spirit::Pair( "PowerVSWR", round(wsswr * 100.0) / 100.0 ) );
-		addr_obj.push_back( json_spirit::Pair( "PowerVSWRLastTX", round(wsswrmean * 100.0) / 100.0 ) );
-		addr_obj.push_back( json_spirit::Pair( "Slots", "1283ABC" ) );
+		wsdata wsd;
+		wsd.fwdpwr = myExtension.readFwdPwr();
+		wsd.revpwr = myExtension.readRevPwr();
+		wsd.swr = myExtension.readSWR();
+		wsd.voltage = myExtension.readVoltage();
+		wsd.current = myExtension.readCurrent();
+		wsd.fwdpwrmean = myExtension.readMeanFwdPwr();
+		wsd.revpwrmean = myExtension.readMeanRevPwr();
+		wsd.swrmean = myExtension.readMeanSWR();
 
-	
-		std::string testinfo = json_spirit::write_formatted(addr_obj);
-		for(auto a_connection: server.get_connections()) {
-			auto send_stream=make_shared<WsServer::SendStream>();
-			*send_stream << testinfo;
-			
-			//server.send is an asynchronous function
-			server.send(a_connection, send_stream);
-		}
+		wsv.SendData(wsd);
+
 // END WEBSOCKETSERVER
-		
-			
+
+
 		// Keep Measurements for Fwd und Rev Power as well as SWR up-to-date_order
 		if (countMeasurementsCyclic >= 20)
 		{
 			countMeasurementsCyclic = 0;
-			
+
 			// Read ADC Values
 			double fwdpwr = myExtension.readFwdPwr();
 			double revpwr = myExtension.readRevPwr();
 			double swr = myExtension.readSWR();
 			double voltage = myExtension.readVoltage();
 			double current = myExtension.readCurrent();
-			
-			::std::cout << ::std::fixed 
+
+			::std::cout << ::std::fixed
 			<< "actual: "
 			<< ::std::setw( 12 ) << voltage << " V  "
 			<< ::std::setw( 12 ) << current << " A  "
@@ -275,44 +221,29 @@ int main(int argc, char** argv) {
 			double fwdpwrmean = myExtension.readMeanFwdPwr();
 			double revpwrmean = myExtension.readMeanRevPwr();
 			double swrmean = myExtension.readMeanSWR();
-			
-			::std::cout << ::std::fixed 
+
+			::std::cout << ::std::fixed
 			<< "Mean:                                   "
 			<< ::std::setw( 12 ) << fwdpwrmean << " Fwd W  "
 			<< ::std::setw( 12 ) << revpwrmean << " Rev W  "
 			<< ::std::setw( 12 ) << swrmean << " SWR" << endl << endl;
-		
-// WEBSOCKETSERVER		
+
+// WEBSOCKETSERVER
 			// Get Temps and send to browser
-			double wsINTemp = myOneWire.readTemp(IN);
-			double wsOUTTemp = myOneWire.readTemp(OUT);
-			double wsAPRSTemp = myOneWire.readTemp(APRS);
-			double wsPATemp = myOneWire.readTemp(PA);
-			double wsExtTemp1 = myOneWire.readTemp(TEMPEXT1);
-			double wsExtTemp2 = myOneWire.readTemp(TEMPEXT2);
-			double wsExtTemp3 = myOneWire.readTemp(TEMPEXT3);
-			double wsExtTemp4 = myOneWire.readTemp(TEMPEXT4);
+			wstemp temp;
+			temp.INTemp = myOneWire.readTemp(IN);
+			temp.OUTTemp = myOneWire.readTemp(OUT);
+			temp.APRSTemp = myOneWire.readTemp(APRS);
+			temp.PATemp = myOneWire.readTemp(PA);
+			temp.ExtTemp1 = myOneWire.readTemp(TEMPEXT1);
+			temp.ExtTemp2 = myOneWire.readTemp(TEMPEXT2);
+			temp.ExtTemp3 = myOneWire.readTemp(TEMPEXT3);
+			temp.ExtTemp4 = myOneWire.readTemp(TEMPEXT4);
 
-			json_spirit::Object addr_obj;
-			addr_obj.push_back( json_spirit::Pair( "INTemp", round(wsINTemp * 10.0) / 10.0 ) );
-			addr_obj.push_back( json_spirit::Pair( "OUTTemp", round(wsOUTTemp * 10.0) / 10.0 ) );
-			addr_obj.push_back( json_spirit::Pair( "APRSTemp", round(wsAPRSTemp * 10.0) / 10.0 ) );
-			addr_obj.push_back( json_spirit::Pair( "PATemp", round(wsPATemp * 10.0) / 10.0 ) );
-			addr_obj.push_back( json_spirit::Pair( "ExtTemp1", round(wsExtTemp1 * 10.0) / 10.0 ) );
-			addr_obj.push_back( json_spirit::Pair( "ExtTemp2", round(wsExtTemp2 * 10.0) / 10.0 ) );
-			addr_obj.push_back( json_spirit::Pair( "ExtTemp3", round(wsExtTemp3 * 10.0) / 10.0 ) );
-			addr_obj.push_back( json_spirit::Pair( "ExtTemp4", round(wsExtTemp4 * 10.0) / 10.0 ) );
+		wsd.SendTemp(temp);
 
-			std::string testinfo = json_spirit::write_formatted(addr_obj);
-			for(auto a_connection: server.get_connections()) {
-				auto send_stream=make_shared<WsServer::SendStream>();
-				*send_stream << testinfo;
-				
-				//server.send is an asynchronous function
-				server.send(a_connection, send_stream);
-			}
 // END WEBSOCKETSERVER
-		
+
 		}
 		countMeasurementsCyclic++;
 
