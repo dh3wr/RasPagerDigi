@@ -29,6 +29,8 @@ struct wstemp {
 	double ExtTemp4;
 };
 
+class RaspagerDigiExtension;
+
 class WebSocketServer {
 using WsServer = SimpleWeb::SocketServer<SimpleWeb::WS>;
 

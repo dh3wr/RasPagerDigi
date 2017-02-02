@@ -35,8 +35,6 @@
 #include "tools/systemcontrol.h"
 #include "tools/serverprocess.h"
 #include "tools/ProcessManager.h"
-
-// Not yet working
 #include "websocket/WebSocketServer.h"
 
 using namespace std;
