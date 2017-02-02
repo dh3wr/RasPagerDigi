@@ -1,5 +1,5 @@
 #include "WebSocketServer.h"
-#include "../tools/raspagerdigiextension."
+#include "../tools/raspagerdigiextension.h"
 #include <functional>
 
 using namespace std;
