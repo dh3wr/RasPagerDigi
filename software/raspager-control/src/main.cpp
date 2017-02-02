@@ -37,11 +37,7 @@
 #include "tools/ProcessManager.h"
 
 // Not yet working
-//#include "websocket/WebSocketServer.h"
-
-// Instead include the server here
-#include "websocket/server_ws.hpp"
-#include "json_spirit.h"
+#include "websocket/WebSocketServer.h"
 
 using namespace std;
 
