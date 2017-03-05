@@ -241,7 +241,7 @@ $(function () {
     // The voltage gauge
     chartVoltage = Highcharts.chart('container-voltage', Highcharts.merge(gaugeOptions, {
         yAxis: {
-            min: 0,
+            min: 8,
             max: 16,
             title: {
                 text: 'Voltage'
@@ -297,7 +297,7 @@ $(function () {
     chartAmpere = Highcharts.chart('container-ampere', Highcharts.merge(gaugeOptions, {
         yAxis: {
             min: 0,
-            max: 10,
+            max: 8,
             title: {
                 text: 'Ampere'
             },
@@ -308,19 +308,19 @@ $(function () {
             ],
 			plotBands: [{
                 from: 0,
-                to: 5,
+                to: 6,
                 color: '#00FF00',
                 innerRadius: '100%',
                 outerRadius: '103%'
             }, {
-                from: 5,
-                to: 6,
+                from: 6,
+                to: 7,
                 color: '#FFFF00',
                 innerRadius: '100%',
                 outerRadius: '103%'
 			}, {
-                from: 6,
-                to: 10,
+                from: 7,
+                to: 8,
                 color: '#C02316',
                 innerRadius: '100%',
                 outerRadius: '103%'
