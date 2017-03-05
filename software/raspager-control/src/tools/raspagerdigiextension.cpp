@@ -157,16 +157,22 @@ double RaspagerDigiExtension::readInternalVoltage() {
 }
 
 double RaspagerDigiExtension::readInternalCurrent() {
-    double voltage;
-    double res;
-    voltage = ((double)readCurrentRaw() / 4096 * 5);
+    double voltageDAC;
+	double current;
+	double current_uncal;
+        
+	voltageDAC = ((double)readCurrentRaw() / 4096 * 5);
 
     // ACS723-LLCTR-20AU  200 mV/A
-    res = (voltage - 0.52) / 0.2;
-    if (res < 0.0) {
-	return 0;
+    current_uncal = (voltageDAC - 0.52) / 0.2;
+	
+	// Calibration according to Calibration Current.xlsx  0.0039x^2 + 1.0403x - 0.0318
+	current = (-0.0039 * pow(current_uncal, 2)) + (1.0403 * current_uncal) - 0.0318;
+	
+    if (current < 0.0) {
+		return 0.0;
     } else {
-	return res;
+		return current;
     }
 }
 
