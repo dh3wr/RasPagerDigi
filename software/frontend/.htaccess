@@ -1,0 +1,6 @@
+<FilesMatch "admin.html">
+AuthName "Please provide admin credentials"
+AuthType Basic
+AuthUserFile /home/pi/RasPagerDigi/software/.htpasswd
+require valid-user
+</FilesMatch> 
