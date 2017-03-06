@@ -32,7 +32,7 @@ var vm = new Vue({
     },
     methods: {
         connect: function(event) {
-            this.socket = new WebSocket("ws://" + "44.225.164.233" + ":8080/echo_all");
+            this.socket = new WebSocket("ws://" + "44.225.164.233" + ":8080/raspagerdigi");
             this.socket.onopen = this.onopen;
             this.socket.onmessage = this.onmessage;
             this.socket.onclose = this.onclose;

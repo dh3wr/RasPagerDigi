@@ -1,0 +1,10 @@
+[Unit]
+Description=POCSAG transmitter controller
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/raspagercontrol
+WorkingDirectory=/usr/local/bin
+
+[Install]
+WantedBy=multi-user.target
