@@ -10,8 +10,8 @@ WebSocketServer::WebSocketServer(RaspagerDigiExtension& myExtension) :
 	// From define
     this->server.config.port = WSServerPort;
 
-    auto& raspagerdigi = this->server.endpoint["^/raspagerdigi/?$"];
-    raspagerdigi.on_message = std::bind(&WebSocketServer::OnMessage, this, placeholders::_1, placeholders::_2);
+    auto& raspager_control = this->server.endpoint["^/raspager_control/?$"];
+    raspager_control.on_message = std::bind(&WebSocketServer::OnMessage, this, placeholders::_1, placeholders::_2);
 }
 
 WebSocketServer::~WebSocketServer() {
@@ -46,7 +46,7 @@ bool WebSocketServer::SendData(const wsdata& data) {
 	std::string testinfo = json_spirit::write_formatted(addr_obj);
 
 //	auto testinfo = "Das ist ja toll";
-	//raspagerdigi.get_connections() can also be used to solely receive connections on this endpoint
+	//raspager_control.get_connections() can also be used to solely receive connections on this endpoint
     for(auto& a_connection: this->server.get_connections()) {
         auto send_stream=make_shared<WsServer::SendStream>();
         *send_stream << testinfo;
@@ -73,7 +73,7 @@ bool WebSocketServer::SendTemp( const wstemp& temp)
 	std::string testinfo = json_spirit::write_formatted(addr_obj);
 
 //	auto testinfo = "Das ist ja toll";
-	//raspagerdigi.get_connections() can also be used to solely receive connections on this endpoint
+	//raspager_control.get_connections() can also be used to solely receive connections on this endpoint
     for(auto& a_connection: this->server.get_connections()) {
         auto send_stream=make_shared<WsServer::SendStream>();
         *send_stream << testinfo;

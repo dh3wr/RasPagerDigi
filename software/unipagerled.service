@@ -1,0 +1,11 @@
+[Unit]
+Description=UniPager LED status display
+After=network.target
+
+[Service]
+ExecStart=/home/pi/UniPagerLED/statusleds.py --gpioConn 10 --gpioTX 12
+WorkingDirectory=/home/pi/UniPagerLED
+Environment=
+
+[Install]
+WantedBy=multi-user.target

@@ -39,7 +39,7 @@
 
 using namespace std;
 
-#define PROG_VERSION	"0.0.13"
+#define PROG_VERSION	"0.0.14"
 #define COPYRIGHTZEILE1	"RasPagerDigi by DH3WR"
 #define COPYRIGHTZEILE2	"DF6EF, Delissen 0.0.13"
 
@@ -125,9 +125,6 @@ int main(int argc, char** argv) {
     myScreensaverMenu.addSubmenuItem(&myInfoNtp);
     myScreensaverMenu.addSubmenuItem(&myInfoHardware);
 
-	// Testing of LEDs
-    myExtension.setPTTLED(true);
-    myExtension.setMasterConnectedLED(true);
 
 	cout << "Screensaver bereit!" << std::endl;
 

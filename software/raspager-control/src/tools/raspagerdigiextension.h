@@ -90,8 +90,6 @@ private:
 	
 public:
     RaspagerDigiExtension(bool skipSetup);
-    void setPTTLED(bool bPTTLED);
-    void setMasterConnectedLED(bool bMasterConnectedLED);
     double readVoltage();
     double readCurrent();
     double readFwdPwr();
