@@ -378,7 +378,7 @@ $(function () {
             min: -10,
             max: 70,
             title: {
-                text: 'Inlet'
+                text: 'Air inlet'
             },
             minorTickPosition: 'outside',
             tickPosition: 'outside',
@@ -418,7 +418,7 @@ $(function () {
             min: -10,
             max: 70,
             title: {
-                text: 'Outlet'
+                text: 'Air outlet'
             },
             pane: 1,
             minorTickPosition: 'outside',
@@ -620,7 +620,7 @@ $(function () {
             min: -10,
             max: 70,
             title: {
-                text: 'Extern 1'
+                text: 'DMR RD625S'
             },
             minorTickPosition: 'outside',
             tickPosition: 'outside',
@@ -660,7 +660,7 @@ $(function () {
             min: -10,
             max: 70,
             title: {
-                text: 'Extern 2'
+                text: '12V Netzteil'
             },
             pane: 1,
             minorTickPosition: 'outside',
@@ -699,7 +699,7 @@ $(function () {
             min: -10,
             max: 70,
             title: {
-                text: 'Extern 3'
+                text: '24 V Netzteil'
             },
             pane: 2,
             minorTickPosition: 'outside',
@@ -738,7 +738,7 @@ $(function () {
             min: -10,
             max: 70,
             title: {
-                text: 'Extern 4'
+                text: 'Schrank innen'
             },
             pane: 3,
             minorTickPosition: 'outside',
