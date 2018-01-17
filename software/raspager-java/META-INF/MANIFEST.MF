@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-Rsrc-Class-Path: ./ jna-4.1.0.jar
-Class-Path: .
-Rsrc-Main-Class: rasPager.Main
-Main-Class: org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader
-
