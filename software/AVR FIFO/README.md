@@ -25,4 +25,4 @@ Wiring to the RasPager in the following way:
 MISO	Pin40 on RasPi3 (GPIO21)
 SCK		Pin38 on RasPi3 (GPIO20)
 RST		Pin36 on RasPi3 (GPIO16)
-MISO	Pin37 on RasPi3 (GPIO26)
+MOSI	Pin37 on RasPi3 (GPIO26)
